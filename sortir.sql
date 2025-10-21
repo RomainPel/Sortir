@@ -3,8 +3,8 @@
 -- Auteur : Moran (adapté pour WAMP)
 
 DROP DATABASE IF EXISTS sorties;
-CREATE DATABASE sorties CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE sorties;
+CREATE DATABASE sortir CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE sortir;
 
 -- Table ETATS
 CREATE TABLE etats (
