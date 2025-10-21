@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Sorties;
+use App\Entity\Sortie;
 use App\Form\SortiesFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,7 +16,7 @@ class SortiesController extends AbstractController
     #[Route('/sorties/{id}', name: 'sorties_details', requirements: ['id' => '\d+'])]
     public function detail(int $id, EntityManagerInterface $em): Response
     {
-        $sortie = $em->getRepository(Sorties::class)->find($id);
+        $sortie = $em->getRepository(Sortie::class)->find($id);
 
         if (!$sortie) {
             throw $this->createNotFoundException('Sortie non trouvée');
@@ -31,7 +31,7 @@ class SortiesController extends AbstractController
     #[Route('/sorties', name: 'sorties_liste')]
     public function index(EntityManagerInterface $entityManager): Response
     {
-        $sorties = $entityManager->getRepository(Sorties::class)->findAll();
+        $sorties = $entityManager->getRepository(Sortie::class)->findAll();
 
         return $this->render('sorties/liste.html.twig', [
             'sorties' => $sorties,
@@ -42,7 +42,7 @@ class SortiesController extends AbstractController
     #[Route('/sorties/ajouter', name: 'sorties_ajouter')]
     public function ajouter(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $sortie = new Sorties();
+        $sortie = new Sortie();
         $form = $this->createForm(SortiesFormType::class, $sortie);
 
         $form->handleRequest($request);

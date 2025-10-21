@@ -2,22 +2,22 @@
 
 namespace App\Repository;
 
-use App\Entity\Inscriptions;
+use App\Entity\Inscription;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Inscriptions>
+ * @extends ServiceEntityRepository<Inscription>
  */
 class InscriptionsRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Inscriptions::class);
+        parent::__construct($registry, Inscription::class);
     }
 
     //    /**
-    //     * @return Inscriptions[] Returns an array of Inscriptions objects
+    //     * @return Inscription[] Returns an array of Inscription objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -31,7 +31,7 @@ class InscriptionsRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Inscriptions
+    //    public function findOneBySomeField($value): ?Inscription
     //    {
     //        return $this->createQueryBuilder('i')
     //            ->andWhere('i.exampleField = :val')

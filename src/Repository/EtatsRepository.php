@@ -2,22 +2,22 @@
 
 namespace App\Repository;
 
-use App\Entity\Etats;
+use App\Entity\Etat;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Etats>
+ * @extends ServiceEntityRepository<Etat>
  */
 class EtatsRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Etats::class);
+        parent::__construct($registry, Etat::class);
     }
 
     //    /**
-    //     * @return Etats[] Returns an array of Etats objects
+    //     * @return Etat[] Returns an array of Etat objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -31,7 +31,7 @@ class EtatsRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Etats
+    //    public function findOneBySomeField($value): ?Etat
     //    {
     //        return $this->createQueryBuilder('e')
     //            ->andWhere('e.exampleField = :val')
