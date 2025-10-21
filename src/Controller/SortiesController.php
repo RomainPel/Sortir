@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class SortiesController extends AbstractController
 {
 
-    #[Route('/sorties/{id}', name: 'sorties_details')]
+    #[Route('/sorties/{id}', name: 'sorties_details', requirements: ['id' => '\d+'])]
     public function detail(int $id, EntityManagerInterface $em): Response
     {
         $sortie = $em->getRepository(Sorties::class)->find($id);
