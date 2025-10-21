@@ -4,8 +4,10 @@ namespace App\Entity;
 
 use App\Repository\ParticipantsRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: ParticipantsRepository::class)]
+#[UniqueEntity(fields: ['pseudo'], message: 'There is already an account with this pseudo')]
 class Participants
 {
     #[ORM\Id]
