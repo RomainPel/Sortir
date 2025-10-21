@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la Sortie{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Détails de la Sortie</h1>
+
+        <ul class="list-group">
+            <li class="list-group-item"><strong>Nom :</strong> {{ sortie.nom }}</li>
+            <li class="list-group-item"><strong>Date début :</strong> {{ sortie.datedebut|date('d/m/Y H:i') }}</li>
+            <li class="list-group-item"><strong>Date clôture :</strong> {{ sortie.datecloture|date('d/m/Y H:i') }}</li>
+            <li class="list-group-item"><strong>Durée :</strong> {{ sortie.duree ?? 'Non précisé' }} minutes</li>
+            <li class="list-group-item"><strong>Max inscriptions :</strong> {{ sortie.nbinscriptionmax }}</li>
+            <li class="list-group-item"><strong>Description :</strong> {{ sortie.descriptioninfos ?? 'Aucune' }}</li>
+            {% if sortie.urlPhoto %}
+                <li class="list-group-item">
+                    <strong>Photo :</strong><br>
+                    <img src="{{ sortie.urlPhoto }}" alt="Image de la sortie" style="max-width: 300px;">
+                </li>
+            {% endif %}
+        </ul>
+        <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="btn btn-success mb-3" target="_blank">
+            S'inscrire
+        </a>
+        <a href="{{ path('sorties_liste') }}" class="btn btn-secondary mt-3">Retour à la liste</a>
+    </div>
+{% endblock %}

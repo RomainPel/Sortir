@@ -13,6 +13,21 @@ use Symfony\Component\Routing\Annotation\Route;
 class SortiesController extends AbstractController
 {
 
+    #[Route('/sorties/{id}', name: 'sorties_details')]
+    public function detail(int $id, EntityManagerInterface $em): Response
+    {
+        $sortie = $em->getRepository(Sorties::class)->find($id);
+
+        if (!$sortie) {
+            throw $this->createNotFoundException('Sortie non trouvée');
+        }
+
+        return $this->render('sorties/details.html.twig', [
+            'sortie' => $sortie,
+        ]);
+    }
+
+
     #[Route('/sorties', name: 'sorties_liste')]
     public function index(EntityManagerInterface $entityManager): Response
     {

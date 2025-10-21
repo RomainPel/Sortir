@@ -22,16 +22,21 @@
                 </thead>
                 <tbody>
                 {% for sortie in sorties %}
-                    <tr>
+                    <tr onclick="window.location.href='{{ path('sorties_details', { id: sortie.id }) }}'" style="cursor: pointer;">
                         <td>{{ sortie.id }}</td>
                         <td>{{ sortie.nom }}</td>
                         <td>{{ sortie.datedebut|date('d/m/Y H:i') }}</td>
                         <td>{{ sortie.datecloture|date('d/m/Y H:i') }}</td>
                         <td>{{ sortie.nbinscriptionmax }}</td>
-                        <td><a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="btn btn-success mb-3" target="_blank"> S'inscrire</a></td>
+                        <td>
+                            <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="btn btn-success mb-3" target="_blank">
+                                S'inscrire
+                            </a>
+                        </td>
                     </tr>
                 {% endfor %}
                 </tbody>
+
             </table>
         {% endif %}
 
