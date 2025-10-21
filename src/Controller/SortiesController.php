@@ -12,6 +12,18 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class SortiesController extends AbstractController
 {
+
+    #[Route('/sorties', name: 'sorties_liste')]
+    public function index(EntityManagerInterface $entityManager): Response
+    {
+        $sorties = $entityManager->getRepository(Sorties::class)->findAll();
+
+        return $this->render('sorties/liste.html.twig', [
+            'sorties' => $sorties,
+        ]);
+    }
+
+
     #[Route('/sorties/ajouter', name: 'sorties_ajouter')]
     public function ajouter(Request $request, EntityManagerInterface $entityManager): Response
     {

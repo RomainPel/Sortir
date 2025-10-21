@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Sorties{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <a href="{{ path('sorties_ajouter') }}" class="btn btn-success mb-3">➕ Ajouter une sortie</a>
+
+        {% if sorties is empty %}
+            <p>Aucune sortie enregistrée.</p>
+        {% else %}
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nom</th>
+                    <th>Date Début</th>
+                    <th>Date Clôture</th>
+                    <th>Nb Max Inscriptions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for sortie in sorties %}
+                    <tr>
+                        <td>{{ sortie.id }}</td>
+                        <td>{{ sortie.nom }}</td>
+                        <td>{{ sortie.datedebut|date('d/m/Y H:i') }}</td>
+                        <td>{{ sortie.datecloture|date('d/m/Y H:i') }}</td>
+                        <td>{{ sortie.nbinscriptionmax }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+
+    </div>
+{% endblock %}
