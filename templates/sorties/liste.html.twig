@@ -17,6 +17,7 @@
                     <th>Date Début</th>
                     <th>Date Clôture</th>
                     <th>Nb Max Inscriptions</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -27,6 +28,7 @@
                         <td>{{ sortie.datedebut|date('d/m/Y H:i') }}</td>
                         <td>{{ sortie.datecloture|date('d/m/Y H:i') }}</td>
                         <td>{{ sortie.nbinscriptionmax }}</td>
+                        <td><a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="btn btn-success mb-3" target="_blank"> S'inscrire</a></td>
                     </tr>
                 {% endfor %}
                 </tbody>
