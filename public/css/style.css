@@ -1,0 +1,16 @@
+body {
+    background-color: #FDEED9 !important;
+}
+
+header .container a img {
+    height: 70px;
+    width: auto;
+    display: block;
+}
+
+header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 10px 0;
+}
