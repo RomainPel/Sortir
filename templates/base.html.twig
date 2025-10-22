@@ -50,6 +50,12 @@
                             <a class="nav-link" href="{{ path('app_register') }}">Créer un compte</a>
                         </li>
                     {% endif %}
+                    {% if app.user and app.user.administrateur %}
+                    <li class="nav-item">
+                        <a class="btn btn-primary" href="{{ path('admin') }}">Accéder au panneau admin</a>
+                    </li>
+                        {% endif %}
+
                 </ul>
 
             </div>

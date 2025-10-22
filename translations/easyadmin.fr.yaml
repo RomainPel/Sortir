@@ -1,0 +1,8 @@
+action.new: "Créer"
+action.edit: "Modifier"
+action.delete: "Supprimer"
+action.save: "Enregistrer"
+action.cancel: "Annuler"
+action.save_and_continue: "Enregistrer et continuer"
+label.true: "Oui"
+label.false: "Non"
