@@ -64,18 +64,6 @@ class Sortie
         return $this->id;
     }
 
-    public function getNoSortie(): ?int
-    {
-        return $this->noSortie;
-    }
-
-    public function setNoSortie(int $noSortie): static
-    {
-        $this->noSortie = $noSortie;
-
-        return $this;
-    }
-
     public function getNom(): ?string
     {
         return $this->nom;
