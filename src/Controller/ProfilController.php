@@ -2,17 +2,47 @@
 
 namespace App\Controller;
 
+use App\Entity\Participant;
+use App\Form\ProfilFormType;
+use App\Service\FileUploader;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+#[Route('/profil', name: 'profil_')]
 final class ProfilController extends AbstractController
 {
-    #[Route('/profil', name: 'app_profil')]
-    public function index(): Response
-    {
-        return $this->render('profil/index.html.twig', [
-            'controller_name' => 'ProfilController',
-        ]);
+#[Route('/{id}', name: 'view', requirements: ['id' => '\d+'], methods: ['GET'])]
+public function detailProfil(int $id, EntityManagerInterface $em): Response
+{
+    $participant = $em->getRepository(Participant::class)->find($id);
+
+    if (!$participant) {
+        throw $this->createNotFoundException('Participant non trouvé');
     }
+
+    return $this->render('profil/view.html.twig', [
+        'participant' => $participant,
+    ]);
+}
+
+#[Route('/{id}/modifier', name: 'edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+public function modifierProfil(Participant $participant, Request $request, EntityManagerInterface $em): Response
+{
+    if (!$participant) {
+        throw $this->createNotFoundException('Participant non trouvé');
+    }
+
+    $profilForm = $this->createForm(ProfilFormType::class, $participant);
+    $profilForm->handleRequest($request);
+    if ($profilForm->isSubmitted() && $profilForm->isValid()) {
+        $em->flush();
+        $this->addFlash('success', 'Profil modifié avec succès !');
+        return $this->redirectToRoute('profil', ['id' => $participant->getId()]);
+    }
+    return $this->render('profil/edit.html.twig',
+        ["form" => $profilForm]
+    );
+}
 }

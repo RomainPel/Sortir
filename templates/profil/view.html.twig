@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Profil</h1>
+
+        <ul class="list-group">
+            <li class="list-group-item"><strong>Pseudo :</strong> {{ participant.pseudo }}</li>
+            <li class="list-group-item"><strong>Nom :</strong> {{ participant.nom }}</li>
+            <li class="list-group-item"><strong>Prénom :</strong> {{ participant.prenom }}</li>
+            <li class="list-group-item"><strong>Téléphone :</strong> {{ participant.telephone }} minutes</li>
+            <li class="list-group-item"><strong>Email :</strong> {{ participant.mail }}</li>
+        </ul>
+        <a href="{{ path('profil_edit',{id:app.user.id}) }}" class="btn btn-warning mt-3">Modifier</a>
+    </div>
+{% endblock %}

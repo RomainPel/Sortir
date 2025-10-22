@@ -31,6 +31,11 @@
         </div>
 
         <!-- Message de bienvenue -->
+        {% if app.user %}
+            <p class="text-center mb-4">
+                Bonjour <strong>{{ app.user.pseudo }}</strong> !
+            </p>
+        {% endif %}
         <p class="text-center mb-4">Bienvenue sur le site Sortir.com ! Découvrez les sorties près de chez vous.</p>
 
         <!-- Section des sorties -->
