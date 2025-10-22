@@ -3,6 +3,8 @@
 namespace App\Form;
 
 use App\Entity\Sortie;
+use App\Entity\Etat;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -19,9 +21,13 @@ class SortiesFormType extends AbstractType
             ->add('datecloture')
             ->add('nbinscriptionmax')
             ->add('descriptioninfos')
-            ->add('etatsortie')
-            ->add('urlPhoto')
-        ;
+            ->add('etat', EntityType::class, [
+                'class' => Etat::class,
+                'choice_label' => 'libelle', // ou le nom du champ à afficher
+                'placeholder' => 'Choisir un état',
+            ])
+            ->add('urlPhoto');
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void
