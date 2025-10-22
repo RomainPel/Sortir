@@ -1,85 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    Home | {{ parent() }}
+    Accueil | {{ parent() }}
 {% endblock %}
 
 {% block body %}
-    <div class="container mt-4">
-        <!-- Section des filtres -->
-        <div class="row g-3 mb-4">
-            <div class="col-md-3">
-                <label for="ville" class="form-label">Ville :</label>
-                <select class="form-select" id="ville">
-                    <option selected>Choisir une ville</option>
-                    <option>Paris</option>
-                    <option>Lyon</option>
-                    <option>Marseille</option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <label for="date" class="form-label">Date :</label>
-                <input type="date" class="form-control" id="date" value="2025-10-22">
-            </div>
-            <div class="col-md-3">
-                <label for="keyword" class="form-label">Mot-clé :</label>
-                <input type="text" class="form-control" id="keyword" placeholder="Ex : Concert">
-            </div>
-            <div class="col-md-3 d-flex align-items-end">
-                <button class="btn btn-primary w-100">Rechercher</button>
-            </div>
-        </div>
-
-        <!-- Message de bienvenue -->
-        {% if app.user %}
-            <p class="text-center mb-4">
-                Bonjour <strong>{{ app.user.pseudo }}</strong> !
-            </p>
-        {% endif %}
-        <p class="text-center mb-4">Bienvenue sur le site Sortir.com ! Découvrez les sorties près de chez vous.</p>
-
-        <!-- Section des sorties -->
-        <h2 class="mb-4">Sorties proposées</h2>
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-            <!-- Sortie 1 -->
-            <div class="col">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Concert Pop à Paris</h5>
-                        <p class="card-text">Date : 22/10/2025 20:00</p>
-                        <p class="card-text">Lieu : Accor Arena</p>
-                        <p class="card-text">Organisateur : Sophie Durand</p>
-                        <p class="card-text"><small class="text-muted">Places : 25 restantes</small></p>
-                        <a href="#" class="btn btn-primary">Voir plus</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Sortie 2 -->
-            <div class="col">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Théâtre à Lyon</h5>
-                        <p class="card-text">Date : 23/10/2025 19:30</p>
-                        <p class="card-text">Lieu : Théâtre des Célestins</p>
-                        <p class="card-text">Organisateur : Marc Petit</p>
-                        <p class="card-text"><small class="text-muted">Places : 18 restantes</small></p>
-                        <a href="#" class="btn btn-primary">Voir plus</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Sortie 3 -->
-            <div class="col">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Marche à Marseille</h5>
-                        <p class="card-text">Date : 24/10/2025 09:00</p>
-                        <p class="card-text">Lieu : Vieux Port</p>
-                        <p class="card-text">Organisateur : Claire Roux</p>
-                        <p class="card-text"><small class="text-muted">Places : 30 restantes</small></p>
-                        <a href="#" class="btn btn-primary">Voir plus</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="container mt-5 text-center">
+        <h1 class="display-4">Bienvenue sur Sortir.com !</h1>
+        <p class="lead mt-3">Découvrez les sorties près de chez vous et amusez-vous !</p>
     </div>
 {% endblock %}

@@ -4,40 +4,35 @@
 
 {% block body %}
     <div class="container mt-4">
-        <a href="{{ path('sorties_ajouter') }}" class="btn btn-success mb-3">➕ Ajouter une sortie</a>
+
+        <div class="mb-3">
+            <a href="{{ path('sorties_ajouter') }}" class="btn btn-success mb-3">➕ Ajouter une sortie</a>
+        </div>
 
         {% if sorties is empty %}
             <p>Aucune sortie enregistrée.</p>
         {% else %}
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nom</th>
-                    <th>Date Début</th>
-                    <th>Date Clôture</th>
-                    <th>Nb Max Inscriptions</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
                 {% for sortie in sorties %}
-                    <tr onclick="window.location.href='{{ path('sorties_details', { id: sortie.id }) }}'" style="cursor: pointer;">
-                        <td>{{ sortie.id }}</td>
-                        <td>{{ sortie.nom }}</td>
-                        <td>{{ sortie.datedebut|date('d/m/Y H:i') }}</td>
-                        <td>{{ sortie.datecloture|date('d/m/Y H:i') }}</td>
-                        <td>{{ sortie.nbinscriptionmax }}</td>
-                        <td>
-                            <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="btn btn-success mb-3" target="_blank">
-                                S'inscrire
-                            </a>
-                        </td>
-                    </tr>
+                    <div class="col">
+                        <div class="card h-100" style="cursor: pointer;" onclick="window.location.href='{{ path('sorties_details', { id: sortie.id }) }}'">
+                            {% if sortie.urlPhoto %}
+                                <img src="{{ sortie.urlPhoto }}" class="card-img-top" alt="{{ sortie.nom }}">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ sortie.nom }}</h5>
+                                <p class="card-text">Début : {{ sortie.datedebut|date('d/m/Y H:i') }}</p>
+                                <p class="card-text">Clôture : {{ sortie.datecloture|date('d/m/Y H:i') }}</p>
+                                <p class="card-text">Places max : {{ sortie.nbinscriptionmax }}</p>
+                                <p class="card-text">{{ sortie.descriptioninfos|length > 100 ? sortie.descriptioninfos|slice(0, 100) ~ '...' : sortie.descriptioninfos }}</p>
+                            </div>
+                            <div class="card-footer text-end">
+                                <a href="#" class="btn btn-success btn-sm">S'inscrire</a>
+                            </div>
+                        </div>
+                    </div>
                 {% endfor %}
-                </tbody>
-
-            </table>
+            </div>
         {% endif %}
 
     </div>
