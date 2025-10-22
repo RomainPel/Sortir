@@ -14,6 +14,33 @@ use Symfony\Component\Routing\Annotation\Route;
 final class SortiesController extends AbstractController
 {
 
+    #[Route('/modifier/{id}', name: 'modifier', requirements: ['id' => '\d+'])]
+    public function modifier(int $id, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $sortie = $entityManager->getRepository(Sortie::class)->find($id);
+
+        if (!$sortie) {
+            throw $this->createNotFoundException('Sortie non trouvée.');
+        }
+
+        $form = $this->createForm(SortiesFormType::class, $sortie);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush(); // Pas besoin de persist, l'entité est déjà gérée
+            $this->addFlash('success', 'Sortie modifiée avec succès !');
+
+            return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
+        }
+
+        return $this->render('sorties/modifier.html.twig', [
+            'form' => $form->createView(),
+            'sortie' => $sortie,
+        ]);
+    }
+
+
+
     #[Route('/{id}', name: 'details', requirements: ['id' => '\d+'])]
     public function detail(int $id, EntityManagerInterface $em): Response
     {

@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier une sortie{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Modifier la sortie : {{ sortie.nom }}</h1>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {{ form_start(form) }}
+        {{ form_row(form.noSortie) }}
+        {{ form_row(form.nom) }}
+        {{ form_row(form.datedebut) }}
+        {{ form_row(form.duree) }}
+        {{ form_row(form.datecloture) }}
+        {{ form_row(form.nbinscriptionmax) }}
+        {{ form_row(form.descriptioninfos) }}
+        {{ form_row(form.urlPhoto) }}
+        {{ form_row(form.etat) }}
+
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+        <a href="{{ path('sorties_liste') }}" class="btn btn-secondary">Annuler</a>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
