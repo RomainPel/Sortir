@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Sortie;
 use App\Entity\Etat;
+use App\Entity\Lieu;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
@@ -28,6 +29,12 @@ class SortiesFormType extends AbstractType
             ->add('datecloture', DateTimeType::class, [
                 'widget' => 'single_text',
                 'label' => 'Date de clôture',
+            ])
+            ->add('lieu', EntityType::class, [
+                'class' => Lieu::class,
+                'choice_label' => 'nom_lieu',
+                'placeholder' => 'Choisir un lieu',
+                'label' => 'Lieu',
             ])
             ->add('nbinscriptionmax', IntegerType::class, ['label' => 'Nombre maximum d’inscriptions'])
             ->add('descriptioninfos', TextareaType::class, [

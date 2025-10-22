@@ -8,6 +8,7 @@
 
         <ul class="list-group">
             <li class="list-group-item"><strong>Nom :</strong> {{ sortie.nom }}</li>
+            <li class="list-group-item"><strong>Lieu :</strong> {{ sortie.lieu.nom_lieu ?? 'Non précisé' }}</li>
             <li class="list-group-item"><strong>Date début :</strong> {{ sortie.datedebut|date('d/m/Y H:i') }}</li>
             <li class="list-group-item"><strong>Date clôture :</strong> {{ sortie.datecloture|date('d/m/Y H:i') }}</li>
             <li class="list-group-item"><strong>Durée :</strong> {{ sortie.duree ?? 'Non précisé' }} minutes</li>

@@ -15,6 +15,12 @@
         </div>
 
         <div class="mb-3">
+            {{ form_label(form.lieu) }}
+            {{ form_widget(form.lieu, {'attr': {'class': 'form-select'}}) }}
+            {{ form_errors(form.lieu) }}
+        </div>
+
+        <div class="mb-3">
             {{ form_label(form.datedebut) }}
             {{ form_widget(form.datedebut, {'attr': {'class': 'form-control'}}) }}
             {{ form_errors(form.datedebut) }}
