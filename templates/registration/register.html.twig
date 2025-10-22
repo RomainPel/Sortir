@@ -4,7 +4,7 @@
 
 {% block body %}
     <div class="container mt-5">
-        <h1 class="text-center">Register</h1>
+        <h1 class="text-center">S'inscrire</h1>
 
         {{ form_errors(registrationForm) }}
 
@@ -46,7 +46,7 @@
                     {{ form_label(registrationForm.agreeTerms, null, {'label_attr': {'class': 'form-check-label'}}) }}
                     {{ form_errors(registrationForm.agreeTerms) }}
                 </div>
-                <button type="submit" class="btn btn-primary">Register</button>
+                <button type="submit" class="btn btn-primary">Envoyer</button>
             </div>
         </div>
         {{ form_end(registrationForm) }}
