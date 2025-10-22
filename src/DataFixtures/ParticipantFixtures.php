@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Participant;
 use App\Entity\Site;
+use App\Entity\Sortie;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -25,8 +26,11 @@ class ParticipantFixtures extends Fixture
         $admin->setMail('admin@sorties.com');
         $admin->setTelephone('0606060606');
         $admin->setMotDePasse($this->userPasswordHasher->hashPassword($admin, 'admin'));
+        $admin->setAdministrateur(true);
+        $admin->setSite($faker->randomElement($sites));
         //$admin->setRoles(['ROLE_ADMIN']);
         $manager->persist($admin);
+        $this->addReference('admin', $admin);
 
         for ($i = 0; $i <= 10; $i++) {
             $participant = new Participant();
@@ -36,10 +40,20 @@ class ParticipantFixtures extends Fixture
             $participant->setMail($faker->email);
             $participant->setTelephone($faker->phoneNumber);
             $participant->setMotDePasse($this->userPasswordHasher->hashPassword($participant, 'password'));
+            $participant->setAdministrateur(false);
             $participant->setSite($faker->randomElement($sites));
+            $this->addSorties($participant);
             $manager->persist($participant);
+            $this->addReference('participant'.$i, $participant);
         }
         $manager->flush();
+    }
+
+    private function addSorties(Participant $participant) :void{
+        for($i=0;$i<=mt_rand(0,5);$i++){
+            $sortie=$this->getReference('sortie'.rand(1,10),Sortie::class);
+            $participant->addSortieOrganise($sortie);
+        }
     }
 
     public function getDependencies(): array

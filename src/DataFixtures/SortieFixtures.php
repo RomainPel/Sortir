@@ -33,9 +33,18 @@ class SortieFixtures extends Fixture
             $sortie->setSiteOrganisateur($faker->randomElement($sites));
             $sortie->setEtat($faker->randomElement($etats));
             $sortie->setLieu($faker->randomElement($lieux));
+            $this->addParticipants($sortie);
             $manager->persist($sortie);
+            $this->addReference('sortie'.$i, $sortie);
         }
         $manager->flush();
+    }
+
+    private function addParticipants(Sortie $sortie) :void{
+        for($i=0;$i<=mt_rand(0,5);$i++){
+            $participant=$this->getReference('participant'.rand(1,10),Participant::class);
+            $sortie->addParticipant($participant);
+        }
     }
 
     public function getDependencies(): array

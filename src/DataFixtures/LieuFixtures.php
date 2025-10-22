@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Lieu;
+use App\Entity\Sortie;
 use App\Entity\Ville;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -21,9 +22,17 @@ class LieuFixtures extends Fixture
             $lieu->setVille($faker->randomElement($villes));
             $lieu->setLatitude($faker->latitude);
             $lieu->setLongitude($faker->longitude);
+            $this->addSorties($lieu);
             $manager->persist($lieu);
         }
         $manager->flush();
+    }
+
+    private function addSorties(Lieu $lieu) :void{
+        for($i=0;$i<=mt_rand(0,5);$i++){
+            $sortie=$this->getReference('sortie'.rand(1,10),Sortie::class);
+            $lieu->addSortie($sortie);
+        }
     }
 
     public function getDependencies(): array

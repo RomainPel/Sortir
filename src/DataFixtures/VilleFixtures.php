@@ -16,6 +16,7 @@ class VilleFixtures extends Fixture
             $ville = new Ville();
             $ville->setNomVille($faker->city);
             $ville->setCodePostal($faker->postcode);
+            $this->addReference('ville'.$i, $ville);
             $manager->persist($ville);
         }
         $manager->flush();
