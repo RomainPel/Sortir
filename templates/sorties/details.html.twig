@@ -46,10 +46,14 @@
                 </table>
             </div>
         {% endif %}
+        <div class="mt-4 d-flex gap-2">
+            <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="btn btn-success">
+                S'inscrire
+            </a>
+            <a href="{{ path('sorties_liste') }}" class="btn btn-primary">
+                Retour à la liste
+            </a>
+        </div>
 
-        <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="btn btn-success mb-3" target="_blank">
-            S'inscrire
-        </a>
-        <a href="{{ path('sorties_liste') }}" class="btn btn-secondary mt-3">Retour à la liste</a>
     </div>
 {% endblock %}

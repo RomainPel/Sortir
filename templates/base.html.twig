@@ -42,8 +42,12 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ path('profil_view',{id:app.user.id}) }}">Mon profil</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('app_logout') }}">Se déconnecter</a>
+                        <li class="nav-item d-flex align-items-center ms-2">
+                            <form action="{{ path('app_logout') }}" method="post" class="d-inline m-0 p-0">
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    Se déconnecter
+                                </button>
+                            </form>
                         </li>
                     {% else %}
                         <li class="nav-item">
@@ -54,10 +58,10 @@
                         </li>
                     {% endif %}
                     {% if app.user and app.user.administrateur %}
-                    <li class="nav-item">
-                        <a class="btn btn-primary" href="{{ path('admin') }}">Accéder au panneau admin</a>
-                    </li>
-                        {% endif %}
+                        <li class="nav-item d-flex align-items-center ms-2">
+                            <a class="btn btn-primary btn-sm" href="{{ path('admin') }}">Accéder au panneau admin</a>
+                        </li>
+                    {% endif %}
 
                 </ul>
 
