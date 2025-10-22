@@ -20,6 +20,32 @@
                 </li>
             {% endif %}
         </ul>
+
+        <h2>Participants inscrits</h2>
+
+        {% if sortie.participants is empty %}
+            <p>Aucun participant inscrit pour le moment.</p>
+        {% else %}
+            <div >
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Pseudo</th>
+                        <th>Nom et prénom</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for participant in sortie.participants %}
+                        <tr>
+                            <td>{{ participant.pseudo }}</td>
+                            <td>{{ participant.nom }} {{ participant.prenom }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+
         <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="btn btn-success mb-3" target="_blank">
             S'inscrire
         </a>
