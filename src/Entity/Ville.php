@@ -15,9 +15,6 @@ class Ville
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $noVille = null;
-
     #[ORM\Column(length: 30)]
     private ?string $nomVille = null;
 
@@ -38,18 +35,6 @@ class Ville
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getNoVille(): ?int
-    {
-        return $this->noVille;
-    }
-
-    public function setNoVille(int $noVille): static
-    {
-        $this->noVille = $noVille;
-
-        return $this;
     }
 
     public function getNomVille(): ?string
