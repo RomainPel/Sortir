@@ -7,6 +7,7 @@ use App\Form\ProfilFormType;
 use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -39,7 +40,7 @@ public function modifierProfil(Participant $participant, Request $request, Entit
     if ($profilForm->isSubmitted() && $profilForm->isValid()) {
         $em->flush();
         $this->addFlash('success', 'Profil modifié avec succès !');
-        return $this->redirectToRoute('profil', ['id' => $participant->getId()]);
+        return $this->redirectToRoute('profil_view', ['id' => $participant->getId()]);
     }
     return $this->render('profil/edit.html.twig',
         ["form" => $profilForm]
