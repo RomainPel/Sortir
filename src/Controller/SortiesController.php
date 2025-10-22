@@ -6,6 +6,7 @@ use App\Entity\Sortie;
 use App\Form\SortiesFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,6 +14,35 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/sorties', name: 'sorties_')]
 final class SortiesController extends AbstractController
 {
+    #[Route('/{id}/inscription', name: 'inscription')]
+    public function inscription(Sortie $sortie, EntityManagerInterface $em, Security $security): Response
+    {
+        $participant = $security->getUser();
+
+        if (!$participant) {
+            $this->addFlash('error', 'Vous devez être connecté pour vous inscrire.');
+            return $this->redirectToRoute('app_login');
+        }
+
+        // Vérifie si déjà inscrit
+        if ($sortie->getParticipants()->contains($participant)) {
+            $this->addFlash('warning', 'Vous êtes déjà inscrit à cette sortie.');
+        } else {
+            // Vérifie s’il reste de la place
+            if ($sortie->getParticipants()->count() >= $sortie->getNbinscriptionmax()) {
+                $this->addFlash('danger', 'La sortie est complète.');
+            } else {
+                // Ajoute le participant à la sortie (côté Sortie)
+                $sortie->addParticipant($participant);
+                $em->persist($sortie);
+                $em->flush();
+
+                $this->addFlash('success', 'Inscription réussie ✅');
+            }
+        }
+
+        return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
+    }
 
     #[Route('/modifier/{id}', name: 'modifier', requirements: ['id' => '\d+'])]
     public function modifier(int $id, Request $request, EntityManagerInterface $entityManager): Response
@@ -27,7 +57,7 @@ final class SortiesController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush(); // Pas besoin de persist, l'entité est déjà gérée
+            $entityManager->flush();
             $this->addFlash('success', 'Sortie modifiée avec succès !');
 
             return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
@@ -38,8 +68,6 @@ final class SortiesController extends AbstractController
             'sortie' => $sortie,
         ]);
     }
-
-
 
     #[Route('/{id}', name: 'details', requirements: ['id' => '\d+'])]
     public function detail(int $id, EntityManagerInterface $em): Response
@@ -55,7 +83,6 @@ final class SortiesController extends AbstractController
         ]);
     }
 
-
     #[Route('/', name: 'liste')]
     public function index(EntityManagerInterface $entityManager): Response
     {
@@ -65,7 +92,6 @@ final class SortiesController extends AbstractController
             'sorties' => $sorties,
         ]);
     }
-
 
     #[Route('/ajouter', name: 'ajouter')]
     public function ajouter(Request $request, EntityManagerInterface $entityManager): Response
@@ -89,4 +115,3 @@ final class SortiesController extends AbstractController
         ]);
     }
 }
-

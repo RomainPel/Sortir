@@ -208,7 +208,7 @@ class Sortie
     {
         if (!$this->participants->contains($participant)) {
             $this->participants->add($participant);
-            $participant->addSortiesInscrit($this);
+            $participant->addSortieInscrit($this);
         }
 
         return $this;

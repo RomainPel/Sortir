@@ -24,10 +24,31 @@
                                 <p class="card-text">Début : {{ sortie.datedebut|date('d/m/Y H:i') }}</p>
                                 <p class="card-text">Clôture : {{ sortie.datecloture|date('d/m/Y H:i') }}</p>
                                 <p class="card-text">Places max : {{ sortie.nbinscriptionmax }}</p>
-                                <p class="card-text">{{ sortie.descriptioninfos|length > 100 ? sortie.descriptioninfos|slice(0, 100) ~ '...' : sortie.descriptioninfos }}</p>
+                                <p class="card-text">
+                                    {{ sortie.descriptioninfos|length > 100
+                                    ? sortie.descriptioninfos|slice(0, 100) ~ '...'
+                                    : sortie.descriptioninfos
+                                    }}
+                                </p>
                             </div>
-                            <div class="card-footer text-end">
-                                <a href="#" class="btn btn-success btn-sm">S'inscrire</a>
+                            <div class="card-footer text-end" style="cursor: auto;" onclick="event.stopPropagation();">
+                                {% if app.user %}
+                                    {# Vérifie si l'utilisateur est déjà inscrit #}
+                                    {% set dejaInscrit = sortie.participants|filter(p => p.id == app.user.id)|length > 0 %}
+
+                                    {% if dejaInscrit %}
+                                        <button class="btn btn-secondary btn-sm" disabled>✅ Inscrit</button>
+                                    {% else %}
+                                        <a href="{{ path('sorties_inscription', { id: sortie.id }) }}" class="btn btn-success btn-sm">
+
+                                        S'inscrire
+                                        </a>
+                                    {% endif %}
+                                {% else %}
+                                    <a href="{{ path('app_login') }}" class="btn btn-outline-primary btn-sm">
+                                        Se connecter pour s'inscrire
+                                    </a>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
