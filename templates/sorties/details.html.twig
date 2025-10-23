@@ -3,68 +3,170 @@
 {% block title %}Détails de la Sortie{% endblock %}
 
 {% block body %}
-    <div class="container mt-4">
-        <h1>Détails de la Sortie</h1>
+    <div class="py-4">
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- En-tête avec titre et statut -->
+                <div class="d-flex justify-content-between align-items-start mb-4">
+                    <div>
+                        <h1 class="text-dark mb-2">{{ sortie.nom }}</h1>
+                        <p class="text-muted mb-0">
+                            <i class="bi bi-calendar-event"></i>
+                            {{ sortie.datedebut|date('d/m/Y à H:i') }}
+                        </p>
+                    </div>
+                    <span class="badge bg-light text-dark fs-6 px-3 py-2">
+                        {{ sortie.participants|length }}/{{ sortie.nbinscriptionmax }} inscrits
+                    </span>
+                </div>
 
-        <ul class="list-group">
-            <li class="list-group-item"><strong>Nom :</strong> {{ sortie.nom }}</li>
-            <li class="list-group-item"><strong>Lieu :</strong> {{ sortie.lieu.nom_lieu ?? 'Non précisé' }}</li>
-            <li class="list-group-item"><strong>Date début :</strong> {{ sortie.datedebut|date('d/m/Y H:i') }}</li>
-            <li class="list-group-item"><strong>Date clôture :</strong> {{ sortie.datecloture|date('d/m/Y H:i') }}</li>
-            <li class="list-group-item"><strong>Durée :</strong> {{ sortie.duree ?? 'Non précisé' }} minutes</li>
-            <li class="list-group-item"><strong>Max inscriptions :</strong> {{ sortie.nbinscriptionmax }}</li>
-            <li class="list-group-item"><strong>Description :</strong> {{ sortie.descriptioninfos ?? 'Aucune' }}</li>
-            {% if sortie.urlPhoto %}
-                <li class="list-group-item">
-                    <strong>Photo :</strong><br>
-                    <img src="{{ sortie.urlPhoto }}" alt="Image de la sortie" style="max-width: 300px;">
-                </li>
-            {% endif %}
-        </ul>
+                <!-- Card principale avec les détails -->
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body p-4">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="detail-item">
+                                    <span class="detail-label">📍 Lieu :</span>
+                                    <span class="detail-value">{{ sortie.lieu.nomlieu ?? 'Non précisé' }}</span>
+                                </div>
+                            </div>
 
-        <h2>Participants inscrits</h2>
+                            <div class="col-md-6">
+                                <div class="detail-item">
+                                    <span class="detail-label">⏱️ Durée :</span>
+                                    <span class="detail-value">{{ sortie.duree ?? 'Non précisé' }} minutes</span>
+                                </div>
+                            </div>
 
-        {% if sortie.participants is empty %}
-            <p>Aucun participant inscrit pour le moment.</p>
-        {% else %}
-            <div>
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Pseudo</th>
-                        <th>Nom et prénom</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for participant in sortie.participants %}
-                        <tr>
-                            <td>{{ participant.pseudo }}</td>
-                            <td>{{ participant.nom }} {{ participant.prenom }}</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                            <div class="col-md-6">
+                                <div class="detail-item">
+                                    <span class="detail-label">🗓️ Date de début :</span>
+                                    <span class="detail-value">{{ sortie.datedebut|date('d/m/Y H:i') }}</span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="detail-item">
+                                    <span class="detail-label">🔒 Clôture inscriptions :</span>
+                                    <span class="detail-value">{{ sortie.datecloture|date('d/m/Y H:i') }}</span>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="detail-item">
+                                    <span class="detail-label">📝 Description :</span>
+                                    <span class="detail-value">{{ sortie.descriptioninfos ?? 'Aucune description disponible' }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Photo si disponible -->
+                {% if sortie.urlPhoto %}
+                    <div class="card shadow-sm border-0 mb-4">
+                        <div class="card-body p-0">
+                            <img src="{{ sortie.urlPhoto }}" alt="Image de la sortie" class="img-fluid rounded">
+                        </div>
+                    </div>
+                {% endif %}
             </div>
-        {% endif %}
 
-        {# Boutons alignés sur la même ligne #}
-        <div class="mt-4 d-flex justify-content-start align-items-center gap-2">
-            {% set dejaInscrit = app.user in sortie.participants %}
+            <div class="col-lg-4">
+                <!-- Card Participants avec compteur et menu déroulant -->
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-white border-bottom py-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">👥 Participants</h5>
+                            <span class="badge bg-primary rounded-pill">
+                                {{ sortie.participants|length }}/{{ sortie.nbinscriptionmax }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-body p-3">
+                        {% if sortie.participants is empty %}
+                            <div class="text-center text-muted py-4">
+                                <div class="mb-2" style="font-size: 2.5rem;">🚶</div>
+                                <p class="mb-0">Aucun participant inscrit</p>
 
-            {% if dejaInscrit %}
-                <a href="{{ path('sorties_desinscription', { id: sortie.id }) }}" class="btn btn-danger btn-sm">
-                    Se désinscrire
-                </a>
-            {% else %}
-                <a href="{{ path('sorties_inscription', { id: sortie.id }) }}" class="btn btn-success btn-sm">
-                    S'inscrire
-                </a>
-            {% endif %}
+                            </div>
+                        {% else %}
+                            <!-- Barre de progression -->
+                            <div class="mb-3">
+                                {% set pourcentage = (sortie.participants|length / sortie.nbinscriptionmax * 100)|round %}
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar {% if pourcentage >= 90 %}bg-danger{% elseif pourcentage >= 70 %}bg-warning{% else %}bg-success{% endif %}"
+                                         role="progressbar"
+                                         style="width: {{ pourcentage }}%">
+                                    </div>
+                                </div>
+                                <small class="text-muted">
+                                    {{ sortie.nbinscriptionmax - sortie.participants|length }} place(s) restante(s)
+                                </small>
+                            </div>
 
-            <a href="{{ path('sorties_liste') }}" class="btn btn-primary btn-sm">
-                Retour à la liste
-            </a>
+                            <!-- Accordion pour la liste des participants -->
+                            <div class="accordion" id="participantsAccordion">
+                                <div class="accordion-item border-0">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed bg-light" type="button"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#participantsList"
+                                                aria-expanded="false">
+                                            Voir la liste complète
+                                        </button>
+                                    </h2>
+                                    <div id="participantsList"
+                                         class="accordion-collapse collapse"
+                                         data-bs-parent="#participantsAccordion">
+                                        <div class="accordion-body p-0">
+                                            <ul class="list-group list-group-flush">
+                                                {% for participant in sortie.participants %}
+                                                    <li class="list-group-item d-flex align-items-center py-2">
+                                                        <div>
+                                                            <div class="fw-semibold">{{ participant.pseudo }}</div>
+                                                            <small class="text-muted">{{ participant.prenom }} {{ participant.nom }}</small>
+                                                        </div>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Boutons d'action -->
+                <div class="d-grid gap-2">
+                    {% set dejaInscrit = app.user in sortie.participants %}
+                    {% set placesDisponibles = sortie.participants|length < sortie.nbinscriptionmax %}
+
+                    {% if dejaInscrit %}
+                        <a href="{{ path('sorties_desinscription', { id: sortie.id }) }}"
+                           class="btn btn-danger btn-lg">
+                            Se désinscrire
+                        </a>
+                    {% else %}
+                        {% if placesDisponibles %}
+                            <a href="{{ path('sorties_inscription', { id: sortie.id }) }}"
+                               class="btn btn-success btn-lg">
+                                S'inscrire
+                            </a>
+                        {% else %}
+                            <button class="btn btn-secondary btn-lg" disabled>
+                                Complet
+                            </button>
+                        {% endif %}
+                    {% endif %}
+
+                    <a href="{{ path('sorties_liste') }}" class="btn btn-outline-primary">
+                        ← Retour à la liste
+                    </a>
+                </div>
+            </div>
         </div>
-
     </div>
+
 {% endblock %}
