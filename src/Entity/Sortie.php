@@ -19,19 +19,19 @@ class Sortie
     private ?string $nom = null;
 
     #[ORM\Column]
-    private ?\DateTime $datedebut = null;
+    private ?\DateTime $dateDebut = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $duree = null;
 
     #[ORM\Column]
-    private ?\DateTime $datecloture = null;
+    private ?\DateTime $dateLimiteInscription = null;
 
     #[ORM\Column]
-    private ?int $nbinscriptionmax = null;
+    private ?int $nbInscriptionMax = null;
 
     #[ORM\Column(length: 500, nullable: true)]
-    private ?string $descriptioninfos = null;
+    private ?string $descriptionInfos = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $urlPhoto = null;
@@ -76,14 +76,14 @@ class Sortie
         return $this;
     }
 
-    public function getDatedebut(): ?\DateTime
+    public function getDateDebut(): ?\DateTime
     {
-        return $this->datedebut;
+        return $this->dateDebut;
     }
 
-    public function setDatedebut(\DateTime $datedebut): static
+    public function setDateDebut(\DateTime $dateDebut): static
     {
-        $this->datedebut = $datedebut;
+        $this->dateDebut = $dateDebut;
 
         return $this;
     }
@@ -100,38 +100,38 @@ class Sortie
         return $this;
     }
 
-    public function getDatecloture(): ?\DateTime
+    public function getDateLimiteInscription(): ?\DateTime
     {
-        return $this->datecloture;
+        return $this->dateLimiteInscription;
     }
 
-    public function setDatecloture(\DateTime $datecloture): static
+    public function setDateLimiteInscription(\DateTime $dateLimiteInscription): static
     {
-        $this->datecloture = $datecloture;
+        $this->dateLimiteInscription = $dateLimiteInscription;
 
         return $this;
     }
 
-    public function getNbinscriptionmax(): ?int
+    public function getNbInscriptionMax(): ?int
     {
-        return $this->nbinscriptionmax;
+        return $this->nbInscriptionMax;
     }
 
-    public function setNbinscriptionmax(int $nbinscriptionmax): static
+    public function setNbInscriptionMax(int $nbInscriptionMax): static
     {
-        $this->nbinscriptionmax = $nbinscriptionmax;
+        $this->nbInscriptionMax = $nbInscriptionMax;
 
         return $this;
     }
 
     public function getDescriptioninfos(): ?string
     {
-        return $this->descriptioninfos;
+        return $this->descriptionInfos;
     }
 
-    public function setDescriptioninfos(?string $descriptioninfos): static
+    public function setDescriptionInfos(?string $descriptionInfos): static
     {
-        $this->descriptioninfos = $descriptioninfos;
+        $this->descriptionInfos = $descriptionInfos;
 
         return $this;
     }
