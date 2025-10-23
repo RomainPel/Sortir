@@ -27,7 +27,7 @@
         {% if sortie.participants is empty %}
             <p>Aucun participant inscrit pour le moment.</p>
         {% else %}
-            <div >
+            <div>
                 <table>
                     <thead>
                     <tr>
@@ -46,7 +46,9 @@
                 </table>
             </div>
         {% endif %}
-        <div class="mt-4 d-flex gap-2">
+
+        {# Boutons alignés sur la même ligne #}
+        <div class="mt-4 d-flex justify-content-start align-items-center gap-2">
             {% set dejaInscrit = app.user in sortie.participants %}
 
             {% if dejaInscrit %}
@@ -59,8 +61,7 @@
                 </a>
             {% endif %}
 
-
-            <a href="{{ path('sorties_liste') }}" class="btn btn-primary">
+            <a href="{{ path('sorties_liste') }}" class="btn btn-primary btn-sm">
                 Retour à la liste
             </a>
         </div>
