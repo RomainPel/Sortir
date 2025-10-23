@@ -23,19 +23,6 @@ class VilleController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'details', requirements: ['id' => '\d+'])]
-    public function detail(int $id, EntityManagerInterface $em): Response
-    {
-        $ville = $em->getRepository(Ville::class)->find($id);
-
-        if (!$ville) {
-            throw $this->createNotFoundException('Ville non trouvée');
-        }
-
-        return $this->render('ville/details.html.twig', [
-            'ville' => $ville,
-        ]);
-    }
 
     #[Route('/ajouter', name: 'ajouter')]
     public function ajouter(Request $request, EntityManagerInterface $entityManager): Response
