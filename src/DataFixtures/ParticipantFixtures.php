@@ -41,20 +41,21 @@ class ParticipantFixtures extends Fixture
             $participant->setTelephone($faker->phoneNumber);
             $participant->setMotDePasse($this->userPasswordHasher->hashPassword($participant, 'password'));
             $participant->setAdministrateur(false);
+            //$participant->setSite($this->getReference('site'.mt_rand(1,4),Site::class));
             $participant->setSite($faker->randomElement($sites));
-            $this->addSorties($participant);
+            //$this->addSorties($participant);
             $manager->persist($participant);
             $this->addReference('participant'.$i, $participant);
         }
         $manager->flush();
     }
 
-    private function addSorties(Participant $participant) :void{
+    /*private function addSorties(Participant $participant) :void{
         for($i=0;$i<=mt_rand(0,5);$i++){
             $sortie=$this->getReference('sortie'.rand(1,10),Sortie::class);
             $participant->addSortieOrganise($sortie);
         }
-    }
+    }*/
 
     public function getDependencies(): array
     {
