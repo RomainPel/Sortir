@@ -26,7 +26,7 @@ class SortieFixtures extends Fixture
             $sortie->setNom($faker->word);
             $sortie->setDescriptionInfos($faker->realText());
             $sortie->setDateDebut($faker->dateTimeBetween('-3 months', 'now'));
-            $sortie->setDateLimiteInscription($faker->dateTimeBetween($sortie->getDatedebut(), '+3 months'));
+            $sortie->setDateCloture($faker->dateTimeBetween($sortie->getDatedebut(), '+3 months'));
             $sortie->setDuree($faker->randomNumber());
             $sortie->setNbInscriptionMax($faker->randomNumber());
             //$sortie->setOrganisateur($this->getReference('participant'.rand(1,10),Participant::class));

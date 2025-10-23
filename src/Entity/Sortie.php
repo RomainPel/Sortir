@@ -25,7 +25,7 @@ class Sortie
     private ?int $duree = null;
 
     #[ORM\Column]
-    private ?\DateTime $dateLimiteInscription = null;
+    private ?\DateTime $dateCloture = null;
 
     #[ORM\Column]
     private ?int $nbInscriptionMax = null;
@@ -100,14 +100,18 @@ class Sortie
         return $this;
     }
 
-    public function getDateLimiteInscription(): ?\DateTime
+    public function getDateCloture(): ?\DateTime
     {
-        return $this->dateLimiteInscription;
+        return $this->dateCloture;
     }
 
-    public function setDateLimiteInscription(\DateTime $dateLimiteInscription): static
+    /**
+     * @param \DateTime $dateCloture
+     * @return $this
+     */
+    public function setDateCloture(\DateTime $dateCloture): static
     {
-        $this->dateLimiteInscription = $dateLimiteInscription;
+        $this->dateCloture = $dateCloture;
 
         return $this;
     }
