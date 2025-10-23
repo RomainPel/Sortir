@@ -4,9 +4,11 @@
 
 {% block body %}
     <div class="container mt-4">
-
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="text-dark mb-0">Liste des sorties</h1>
+        </div>
         <div class="mb-3">
-            <a href="{{ path('sorties_ajouter') }}" class="btn btn-success mb-3">➕ Ajouter une sortie</a>
+            <a href="{{ path('sorties_ajouter') }}" class="btn btn-success">➕ Ajouter une sortie</a>
         </div>
 
         {% if sorties is empty %}
