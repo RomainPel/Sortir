@@ -29,6 +29,10 @@ class SortieFixtures extends Fixture
             $sortie->setDatecloture($faker->dateTimeBetween($sortie->getDatedebut(), '+3 months'));
             $sortie->setDuree($faker->randomFloat());
             $sortie->setNbinscriptionmax($faker->randomNumber());
+            //$sortie->setOrganisateur($this->getReference('participant'.rand(1,10),Participant::class));
+            //$sortie->setSiteOrganisateur($this->getReference('site'.rand(1,4),Site::class));
+            //$sortie->setEtat($this->getReference('site'.rand(1,6),Etat::class));
+            //$sortie->setLieu($this->getReference('site'.rand(1,10),Lieu::class));
             $sortie->setOrganisateur($faker->randomElement($participants));
             $sortie->setSiteOrganisateur($faker->randomElement($sites));
             $sortie->setEtat($faker->randomElement($etats));
