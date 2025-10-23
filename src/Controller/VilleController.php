@@ -14,6 +14,27 @@ use Symfony\Component\Routing\Annotation\Route;
 class VilleController extends AbstractController
 {
 
+    #[Route('/supprimer/{id}', name: 'supprimer', requirements: ['id' => '\d+'])]
+    public function delete(int $id, EntityManagerInterface $entityManager): Response
+    {
+        $ville = $entityManager->getRepository(Ville::class)->find($id);
+
+        if (!$ville) {
+            throw $this->createNotFoundException('Ville non trouvée');
+        }
+
+        $entityManager->remove($ville);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Ville supprimée avec succès !');
+
+        return $this->redirectToRoute('villes_liste');
+    }
+
+
+
+
+
 
     #[Route('/modifier/{id}', name: 'modifier', requirements: ['id' => '\d+'])]
     public function modifier(int $id, Request $request, EntityManagerInterface $entityManager): Response

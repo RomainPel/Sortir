@@ -38,7 +38,13 @@
                                            title="Modifier">
                                             ✏️
                                         </a>
-
+                                        <div> </div>
+                                        <a href="{{ path('villes_supprimer', {id: ville.id}) }}"
+                                        class="btn btn-outline-danger"
+                                        title="Supprimer"
+                                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette ville ?')">
+                                        🗑️
+                                        </a>
                                     </div>
                                 </td>
                             </tr>
