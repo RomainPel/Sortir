@@ -13,7 +13,7 @@
             <th>ID</th>
             <th>Nom</th>
             <th>Code postal</th>
-            
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -22,7 +22,7 @@
                 <td>{{ ville.id }}</td>
                 <td>{{ ville.nomVille }}</td>
                 <td>{{ ville.codePostal }}</td>
-
+                <td><a href="{{ path('villes_modifier', {id: ville.id}) }}">✏️</a></td>
             </tr>
         {% else %}
             <tr>

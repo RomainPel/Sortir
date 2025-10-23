@@ -13,6 +13,35 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/villes', name: 'villes_')]
 class VilleController extends AbstractController
 {
+
+
+    #[Route('/modifier/{id}', name: 'modifier', requirements: ['id' => '\d+'])]
+    public function modifier(int $id, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $ville = $entityManager->getRepository(Ville::class)->find($id);
+
+        if (!$ville) {
+            throw $this->createNotFoundException('Ville non trouvée');
+        }
+
+        $form = $this->createForm(VilleFormType::class, $ville);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Ville modifiée avec succès !');
+            return $this->redirectToRoute('villes_liste');
+        }
+
+        return $this->render('ville/modifier.html.twig', [
+            'form' => $form->createView(),
+            'ville' => $ville,
+        ]);
+    }
+
+
+
     #[Route('/', name: 'liste')]
     public function index(EntityManagerInterface $entityManager): Response
     {
