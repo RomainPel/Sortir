@@ -50,12 +50,15 @@
             {% set dejaInscrit = app.user in sortie.participants %}
 
             {% if dejaInscrit %}
-                <button class="btn btn-secondary mb-3" disabled>✅ Inscrit</button>
+                <a href="{{ path('sorties_desinscription', { id: sortie.id }) }}" class="btn btn-danger btn-sm">
+                    Se désinscrire
+                </a>
             {% else %}
                 <a href="{{ path('sorties_inscription', { id: sortie.id }) }}" class="btn btn-success btn-sm">
                     S'inscrire
                 </a>
             {% endif %}
+
 
             <a href="{{ path('sorties_liste') }}" class="btn btn-primary">
                 Retour à la liste

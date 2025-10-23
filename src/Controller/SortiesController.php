@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Controller;
-
+use App\Entity\Participant;
 use App\Entity\Sortie;
 use App\Form\SortiesFormType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -14,6 +14,36 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/sorties', name: 'sorties_')]
 final class SortiesController extends AbstractController
 {
+
+    #[Route('/{id}/desinscription', name: 'desinscription')]
+    public function desinscription(Sortie $sortie, EntityManagerInterface $em, Security $security): Response
+    {
+        $participant = $security->getUser();
+
+        if (!$participant) {
+            $this->addFlash('error', 'Vous devez être connecté pour vous désinscrire.');
+            return $this->redirectToRoute('app_login');
+        }
+
+        // Vérifie si le participant est inscrit
+        if (!$sortie->getParticipants()->contains($participant)) {
+            $this->addFlash('warning', 'Vous n’êtes pas inscrit à cette sortie.');
+        } else {
+            // Retire le participant depuis la sortie
+            $sortie->removeParticipant($participant);
+            $em->persist($sortie);
+            $em->flush();
+
+            $this->addFlash('success', 'Vous avez été désinscrit avec succès ❌');
+        }
+
+        return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
+    }
+
+
+
+
+
     #[Route('/{id}/inscription', name: 'inscription')]
     public function inscription(Sortie $sortie, EntityManagerInterface $em, Security $security): Response
     {

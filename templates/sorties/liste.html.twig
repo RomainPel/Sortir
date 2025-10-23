@@ -37,11 +37,12 @@
                                     {% set dejaInscrit = sortie.participants|filter(p => p.id == app.user.id)|length > 0 %}
 
                                     {% if dejaInscrit %}
-                                        <button class="btn btn-secondary btn-sm" disabled>✅ Inscrit</button>
+                                        <a href="{{ path('sorties_desinscription', { id: sortie.id }) }}" class="btn btn-danger btn-sm">
+                                            Se désinscrire
+                                        </a>
                                     {% else %}
                                         <a href="{{ path('sorties_inscription', { id: sortie.id }) }}" class="btn btn-success btn-sm">
-
-                                        S'inscrire
+                                            S'inscrire
                                         </a>
                                     {% endif %}
                                 {% else %}

@@ -217,7 +217,7 @@ class Sortie
     public function removeParticipant(Participant $participant): static
     {
         if ($this->participants->removeElement($participant)) {
-            $participant->removeSortiesInscrit($this);
+            $participant->removeSortieInscrit($this);
         }
 
         return $this;
