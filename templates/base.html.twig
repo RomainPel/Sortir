@@ -39,6 +39,14 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ path('sorties_liste') }}">Les sorties</a>
                         </li>
+
+                        {% if app.user.administrateur %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('villes_liste') }}">Villes</a>
+                            </li>
+                        {% endif %}
+
+
                         <li class="nav-item">
                             <a class="nav-link" href="{{ path('profil_view',{id:app.user.id}) }}">Mon profil</a>
                         </li>

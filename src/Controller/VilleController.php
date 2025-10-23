@@ -2,17 +2,59 @@
 
 namespace App\Controller;
 
+use App\Entity\Ville;
+use App\Form\VilleFormType;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 
-final class VilleController extends AbstractController
+#[Route('/villes', name: 'villes_')]
+class VilleController extends AbstractController
 {
-    #[Route('/ville', name: 'app_ville')]
-    public function index(): Response
+    #[Route('/', name: 'liste')]
+    public function index(EntityManagerInterface $entityManager): Response
     {
-        return $this->render('ville/index.html.twig', [
-            'controller_name' => 'VilleController',
+        $villes = $entityManager->getRepository(Ville::class)->findAll();
+
+        return $this->render('ville/liste.html.twig', [
+            'villes' => $villes,
+        ]);
+    }
+
+    #[Route('/{id}', name: 'details', requirements: ['id' => '\d+'])]
+    public function detail(int $id, EntityManagerInterface $em): Response
+    {
+        $ville = $em->getRepository(Ville::class)->find($id);
+
+        if (!$ville) {
+            throw $this->createNotFoundException('Ville non trouvée');
+        }
+
+        return $this->render('ville/details.html.twig', [
+            'ville' => $ville,
+        ]);
+    }
+
+    #[Route('/ajouter', name: 'ajouter')]
+    public function ajouter(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $ville = new Ville();
+        $form = $this->createForm(VilleFormType::class, $ville);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($ville);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Ville ajoutée avec succès !');
+
+            return $this->redirectToRoute('villes_liste');
+        }
+
+        return $this->render('ville/ajouter.html.twig', [
+            'form' => $form->createView(),
         ]);
     }
 }
