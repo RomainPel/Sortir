@@ -2,17 +2,88 @@
 
 namespace App\Controller;
 
+use App\Entity\Site;
+use App\Form\SiteFormType;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 
-final class SiteController extends AbstractController
+#[Route('/sites', name: 'sites_')]
+class SiteController extends AbstractController
 {
-    #[Route('/site', name: 'app_site')]
-    public function index(): Response
+    #[Route('/supprimer/{id}', name: 'supprimer', requirements: ['id' => '\d+'])]
+    public function delete(int $id, EntityManagerInterface $entityManager): Response
     {
-        return $this->render('site/index.html.twig', [
-            'controller_name' => 'SiteController',
+        $site = $entityManager->getRepository(Site::class)->find($id);
+
+        if (!$site) {
+            throw $this->createNotFoundException('Site non trouvé');
+        }
+
+        $entityManager->remove($site);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Site supprimé avec succès !');
+
+        return $this->redirectToRoute('sites_liste');
+    }
+
+    #[Route('/modifier/{id}', name: 'modifier', requirements: ['id' => '\d+'])]
+    public function modifier(int $id, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $site = $entityManager->getRepository(Site::class)->find($id);
+
+        if (!$site) {
+            throw $this->createNotFoundException('Site non trouvé');
+        }
+
+        $form = $this->createForm(SiteFormType::class, $site);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Site modifié avec succès !');
+            return $this->redirectToRoute('sites_liste');
+        }
+
+        return $this->render('site/modifier.html.twig', [
+            'form' => $form->createView(),
+            'site' => $site,
+        ]);
+    }
+
+    #[Route('/', name: 'liste')]
+    public function index(EntityManagerInterface $entityManager): Response
+    {
+        $sites = $entityManager->getRepository(Site::class)->findAll();
+
+        return $this->render('site/liste.html.twig', [
+            'sites' => $sites,
+        ]);
+    }
+
+    #[Route('/ajouter', name: 'ajouter')]
+    public function ajouter(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $site = new Site();
+        $form = $this->createForm(SiteFormType::class, $site);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($site);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Site ajouté avec succès !');
+
+            return $this->redirectToRoute('sites_liste');
+        }
+
+        return $this->render('site/ajouter.html.twig', [
+            'form' => $form->createView(),
         ]);
     }
 }
+
