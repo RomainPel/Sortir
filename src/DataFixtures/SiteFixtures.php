@@ -11,7 +11,7 @@ class SiteFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         $site1 = new Site();
-        $site1->setNomSite(': SAINT HERBLAIN');
+        $site1->setNomSite('SAINT HERBLAIN');
         $manager->persist($site1);
         $this->addReference('site1', $site1);
 
