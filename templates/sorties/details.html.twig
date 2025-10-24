@@ -128,12 +128,13 @@
 
                             <!-- Accordion pour la liste des participants -->
                             <div class="accordion" id="participantsAccordion">
-                                <div class="accordion-item border-0">
+                                <div class="accordion-item">
                                     <h2 class="accordion-header">
                                         <button class="accordion-button collapsed bg-light" type="button"
                                                 data-bs-toggle="collapse"
                                                 data-bs-target="#participantsList"
-                                                aria-expanded="false">
+                                                aria-expanded="false"
+                                                aria-controls="participantsList">
                                             Voir la liste complète
                                         </button>
                                     </h2>
@@ -143,12 +144,14 @@
                                         <div class="accordion-body p-0">
                                             <ul class="list-group list-group-flush">
                                                 {% for participant in sortie.participants %}
-                                                    <li class="list-group-item d-flex align-items-center py-2">
-                                                        <div>
-                                                            <div class="fw-semibold">{{ participant.pseudo }}</div>
-                                                            <small class="text-muted">{{ participant.prenom }} {{ participant.nom }}</small>
-                                                        </div>
-                                                    </li>
+                                                    <a href="{{ path('profil_view', { id: participant.id }) }}" class="link-underline-light">
+                                                        <li class="list-group-item d-flex align-items-center py-2">
+                                                            <div>
+                                                                <div class="fw-semibold">{{ participant.pseudo }}</div>
+                                                                <small class="text-muted">{{ participant.prenom }} {{ participant.nom }}</small>
+                                                            </div>
+                                                        </li>
+                                                    </a>
                                                 {% endfor %}
                                             </ul>
                                         </div>
