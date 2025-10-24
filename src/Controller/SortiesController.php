@@ -42,6 +42,32 @@ final class SortiesController extends AbstractController
     }
 
 
+    #[Route('/{id}/publier', name: 'publier', methods: ['GET'])]
+    public function publier(Sortie $sortie, EntityManagerInterface $em, Security $security): Response
+    {
+        $user = $security->getUser();
+
+        if (!$user || $sortie->getOrganisateur() !== $user) {
+            $this->addFlash('error', 'Seul l’organisateur peut publier cette sortie.');
+            return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
+        }
+
+        //Récupération de l'état par noEtat
+        $etatOuvert = $em->getRepository(Etat::class)->findOneBy(['noEtat' => 2]);
+        if (!$etatOuvert) {
+            $this->addFlash('error', 'État "Ouverte" introuvable dans la base.');
+            return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
+        }
+
+        $sortie->setEtat($etatOuvert);
+        $em->flush();
+
+        $this->addFlash('success', 'La sortie a été publiée avec succès 🚫');
+
+        return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
+    }
+
+
 
 
     #[Route('/{id}/desinscription', name: 'desinscription')]
@@ -104,9 +130,9 @@ final class SortiesController extends AbstractController
     }
 
     #[Route('/modifier/{id}', name: 'modifier', requirements: ['id' => '\d+'])]
-    public function modifier(int $id, Request $request, EntityManagerInterface $entityManager): Response
+    public function modifier(int $id, Request $request, EntityManagerInterface $em): Response
     {
-        $sortie = $entityManager->getRepository(Sortie::class)->find($id);
+        $sortie = $em->getRepository(Sortie::class)->find($id);
 
         if (!$sortie) {
             throw $this->createNotFoundException('Sortie non trouvée.');
@@ -116,7 +142,7 @@ final class SortiesController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $em->flush();
             $this->addFlash('success', 'Sortie modifiée avec succès !');
 
             return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
@@ -143,9 +169,9 @@ final class SortiesController extends AbstractController
     }
 
     #[Route('/', name: 'liste')]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(EntityManagerInterface $em): Response
     {
-        $sorties = $entityManager->getRepository(Sortie::class)->findAll();
+        $sorties = $em->getRepository(Sortie::class)->findAll();
 
         return $this->render('sorties/liste.html.twig', [
             'sorties' => $sorties,
@@ -153,7 +179,7 @@ final class SortiesController extends AbstractController
     }
 
     #[Route('/ajouter', name: 'ajouter')]
-    public function ajouter(Request $request, EntityManagerInterface $entityManager): Response
+    public function ajouter(Request $request, EntityManagerInterface $em): Response
     {
 
 
@@ -166,13 +192,21 @@ final class SortiesController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $sortie->setOrganisateur($this->getUser());
 
-            $entityManager->persist($sortie);
+            //Récupération de l'état par noEtat
+            $etatOuvert = $em->getRepository(Etat::class)->findOneBy(['noEtat' => 1]);
+            if (!$etatOuvert) {
+                $this->addFlash('error', 'État "Créée" introuvable dans la base.');
+                return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
+            }
+            $sortie->setEtat($etatOuvert);
 
-            $entityManager->flush();
+            $em->persist($sortie);
 
-            $this->addFlash('success', 'Sortie ajoutée avec succès !');
+            $em->flush();
 
-            return $this->redirectToRoute('sorties_ajouter');
+            $this->addFlash('success', 'Sortie créée avec succès !');
+
+            return $this->redirectToRoute('sorties_liste');
         }
 
         return $this->render('sorties/ajouter.html.twig', [
