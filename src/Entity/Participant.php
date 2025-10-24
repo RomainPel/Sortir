@@ -43,6 +43,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private ?bool $actif = true;
 
     #[ORM\ManyToOne(inversedBy: 'participants')]
+    #[ORM\JoinColumn(nullable: true, onDelete: "SET NULL")]
     private ?Site $site = null;
 
     /**

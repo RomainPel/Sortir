@@ -37,6 +37,7 @@ class Sortie
     private ?string $urlPhoto = null;
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\JoinColumn(nullable: true, onDelete: "SET NULL")]
     private ?Lieu $lieu = null;
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
@@ -46,6 +47,7 @@ class Sortie
     private ?Participant $organisateur = null;
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\JoinColumn(nullable: true, onDelete: "SET NULL")]
     private ?Site $siteOrganisateur = null;
 
     /**
