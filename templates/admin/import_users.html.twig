@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h2>Importer des utilisateurs</h2>
+
+    <form action="{{ path('admin_import_users') }}" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".csv" required>
+        <button type="submit">Importer</button>
+    </form>
+{% endblock %}
