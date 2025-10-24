@@ -126,13 +126,19 @@ final class SortiesController extends AbstractController
     #[Route('/ajouter', name: 'ajouter')]
     public function ajouter(Request $request, EntityManagerInterface $entityManager): Response
     {
+
+
+
         $sortie = new Sortie();
         $form = $this->createForm(SortiesFormType::class, $sortie);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $sortie->setOrganisateur($this->getUser());
+
             $entityManager->persist($sortie);
+
             $entityManager->flush();
 
             $this->addFlash('success', 'Sortie ajoutée avec succès !');

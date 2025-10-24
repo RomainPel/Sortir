@@ -3,61 +3,68 @@
 {% block title %}Liste des Sorties{% endblock %}
 
 {% block body %}
-    <div class="container mt-4">
+    <div class="container mt-5">
+
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="text-dark mb-0">Liste des sorties</h1>
-        </div>
-        <div class="mb-3">
-            <a href="{{ path('sorties_ajouter') }}" class="btn btn-success">➕ Ajouter une sortie</a>
+            <h1 class="fw-bold text-black mb-0">Sorties à venir</h1>
+            <a href="{{ path('sorties_ajouter') }}" class="btn btn-outline-success px-3">➕ Ajouter une sortie
+            </a>
         </div>
 
         {% if sorties is empty %}
-            <p>Aucune sortie enregistrée.</p>
+            <div class="alert alert-info text-center shadow-sm rounded-3">
+                Aucune sortie enregistrée pour le moment.
+            </div>
         {% else %}
             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
                 {% for sortie in sorties %}
                     <div class="col">
-                        <div class="card h-100" style="cursor: pointer;" onclick="window.location.href='{{ path('sorties_details', { id: sortie.id }) }}'">
+                        <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden"
+                             style="cursor: pointer; background-color: #f9f9f6;"
+                             onclick="window.location.href='{{ path('sorties_details', { id: sortie.id }) }}'">
+
                             {% if sortie.urlPhoto %}
-                                <img src="{{ sortie.urlPhoto }}" class="card-img-top" alt="{{ sortie.nom }}">
+                                <img src="{{ sortie.urlPhoto }}" class="card-img-top" alt="{{ sortie.nom }}" style="object-fit: cover; height: 200px;">
+                            {% else %}
+                                <img src="{{ asset('img/coming_soon.jpg') }}" class="card-img-top" alt="Pas d'image" style="object-fit: cover; height: 200px;">
                             {% endif %}
+
                             <div class="card-body">
-                                <h5 class="card-title">{{ sortie.nom }}</h5>
-                                <p class="card-text">Début : {{ sortie.datedebut|date('d/m/Y H:i') }}</p>
-                                <p class="card-text">Clôture : {{ sortie.datecloture|date('d/m/Y H:i') }}</p>
-                                <p class="card-text">Places max : {{ sortie.nbinscriptionmax }}</p>
-                                <p class="card-text">
+                                <h5 class="card-title fw-bold">{{ sortie.nom }}</h5>
+
+                                <div class="d-flex flex-wrap gap-2 mb-2">
+                                    <div class="rounded-3 px-2 py-1 small text-muted d-flex align-items-center"
+                                         style="background-color: #f0efeb; border: 1px solid #ddd;">
+                                        <i class="bi bi-calendar-event me-1 text-secondary"></i>
+                                        <span>Date de la sortie {{ sortie.datedebut|date('d/m/Y H:i') }}</span>
+                                    </div>
+                                    <div class="rounded-3 px-2 py-1 small text-muted d-flex align-items-center"
+                                         style="background-color: #f0efeb; border: 1px solid #ddd;">
+                                        <i class="bi bi-calendar-x me-1 text-secondary"></i>
+                                        <span>Clôture {{ sortie.datecloture|date('d/m/Y H:i') }}</span>
+                                    </div>
+                                    <div class="rounded-3 px-2 py-1 small text-muted d-flex align-items-center"
+                                         style="background-color: #f0efeb; border: 1px solid #ddd;">
+                                        <i class="bi bi-people me-1 text-secondary"></i>
+                                        <span>{{ sortie.nbinscriptionmax }} places max</span>
+                                    </div>
+                                </div>
+                                <p class="card-text text-secondary" style="font-size: 0.95rem;">
                                     {{ sortie.descriptioninfos|length > 100
                                     ? sortie.descriptioninfos|slice(0, 100) ~ '...'
                                     : sortie.descriptioninfos
                                     }}
                                 </p>
+                                <hr>
+                            <div class="card-footer bg-transparent border-0 text-center"
+                                 style="cursor: pointer;" onclick="event.stopPropagation(); window.location.href='{{ path('sorties_details', { id: sortie.id }) }}'">
+                                <span class="text-primary fw-semibold">Voir plus →</span>
                             </div>
-                            <div class="card-footer text-end" style="cursor: auto;" onclick="event.stopPropagation();">
-                                {% if app.user %}
-                                    {# Vérifie si l'utilisateur est déjà inscrit #}
-                                    {% set dejaInscrit = sortie.participants|filter(p => p.id == app.user.id)|length > 0 %}
-
-                                    {% if dejaInscrit %}
-                                        <a href="{{ path('sorties_desinscription', { id: sortie.id }) }}" class="btn btn-danger btn-sm">
-                                            Se désinscrire
-                                        </a>
-                                    {% else %}
-                                        <a href="{{ path('sorties_inscription', { id: sortie.id }) }}" class="btn btn-success btn-sm">
-                                            S'inscrire
-                                        </a>
-                                    {% endif %}
-                                {% else %}
-                                    <a href="{{ path('app_login') }}" class="btn btn-outline-primary btn-sm">
-                                        Se connecter pour s'inscrire
-                                    </a>
-                                {% endif %}
-                            </div>
+                        </div>
                         </div>
                     </div>
                 {% endfor %}
             </div>
         {% endif %}
-
     </div>
 {% endblock %}

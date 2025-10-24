@@ -161,9 +161,25 @@
                         {% endif %}
                     {% endif %}
 
+
+                    {% if sortie.organisateur == app.user %}
+                        <a href="{{ path('sorties_modifier', {'id': sortie.id}) }}" class="btn btn-outline-info">
+                            Modifier ma sortie
+                        </a>
+
+                        <a href="{{ path('sorties_liste') }}" class="btn btn-outline-warning">
+                            Cloturé les inscriptions
+                        </a>
+                    {% endif %}
+
                     <a href="{{ path('sorties_liste') }}" class="btn btn-outline-primary">
                         ← Retour à la liste
                     </a>
+
+
+
+
+
                 </div>
             </div>
         </div>
