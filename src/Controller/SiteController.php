@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Site;
 use App\Form\SiteFormType;
+use App\Repository\SitesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -56,14 +57,26 @@ class SiteController extends AbstractController
     }
 
     #[Route('/', name: 'liste')]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(SitesRepository $siteRepository, Request $request): Response
     {
-        $sites = $entityManager->getRepository(Site::class)->findAll();
+        $search = $request->query->get('search');
+
+        if ($search) {
+            $sites = $siteRepository->createQueryBuilder('s')
+                ->where('s.nomSite LIKE :search')
+                ->setParameter('search', '%'.$search.'%')
+                ->getQuery()
+                ->getResult();
+        } else {
+            $sites = $siteRepository->findAll();
+        }
 
         return $this->render('site/liste.html.twig', [
             'sites' => $sites,
+            'search' => $search, // pour pré-remplir le champ de recherche
         ]);
     }
+
 
     #[Route('/ajouter', name: 'ajouter')]
     public function ajouter(Request $request, EntityManagerInterface $entityManager): Response

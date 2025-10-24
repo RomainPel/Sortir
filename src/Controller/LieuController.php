@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Lieu;
 use App\Form\LieuFormType;
+use App\Repository\LieuxRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,21 +14,46 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/lieux', name: 'lieux_')]
 class LieuController extends AbstractController
 {
-    #[Route('/supprimer/{id}', name: 'supprimer', requirements: ['id' => '\d+'])]
-    public function delete(int $id, EntityManagerInterface $entityManager): Response
+    #[Route('/', name: 'liste')]
+    public function index(LieuxRepository $lieuRepository, Request $request): Response
     {
-        $lieu = $entityManager->getRepository(Lieu::class)->find($id);
+        $search = $request->query->get('search');
 
-        if (!$lieu) {
-            throw $this->createNotFoundException('Lieu non trouvé');
+        if ($search) {
+            $lieux = $lieuRepository->createQueryBuilder('l')
+                ->where('l.nomLieu LIKE :search')
+                ->setParameter('search', '%'.$search.'%')
+                ->getQuery()
+                ->getResult();
+        } else {
+            $lieux = $lieuRepository->findAll();
         }
 
-        $entityManager->remove($lieu);
-        $entityManager->flush();
+        return $this->render('lieu/liste.html.twig', [
+            'lieux' => $lieux,
+            'search' => $search, // pour pré-remplir le champ de recherche
+        ]);
+    }
 
-        $this->addFlash('success', 'Lieu supprimé avec succès !');
+    #[Route('/ajouter', name: 'ajouter')]
+    public function ajouter(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $lieu = new Lieu();
+        $form = $this->createForm(LieuFormType::class, $lieu);
+        $form->handleRequest($request);
 
-        return $this->redirectToRoute('lieux_liste');
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($lieu);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Lieu ajouté avec succès !');
+
+            return $this->redirectToRoute('lieux_liste');
+        }
+
+        return $this->render('lieu/ajouter.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 
     #[Route('/modifier/{id}', name: 'modifier', requirements: ['id' => '\d+'])]
@@ -55,34 +81,20 @@ class LieuController extends AbstractController
         ]);
     }
 
-    #[Route('/', name: 'liste')]
-    public function index(EntityManagerInterface $entityManager): Response
+    #[Route('/supprimer/{id}', name: 'supprimer', requirements: ['id' => '\d+'])]
+    public function delete(int $id, EntityManagerInterface $entityManager): Response
     {
-        $lieux = $entityManager->getRepository(Lieu::class)->findAll();
+        $lieu = $entityManager->getRepository(Lieu::class)->find($id);
 
-        return $this->render('lieu/liste.html.twig', [
-            'lieux' => $lieux,
-        ]);
-    }
-
-    #[Route('/ajouter', name: 'ajouter')]
-    public function ajouter(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $lieu = new Lieu();
-        $form = $this->createForm(LieuFormType::class, $lieu);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($lieu);
-            $entityManager->flush();
-
-            $this->addFlash('success', 'Lieu ajouté avec succès !');
-
-            return $this->redirectToRoute('lieux_liste');
+        if (!$lieu) {
+            throw $this->createNotFoundException('Lieu non trouvé');
         }
 
-        return $this->render('lieu/ajouter.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        $entityManager->remove($lieu);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Lieu supprimé avec succès !');
+
+        return $this->redirectToRoute('lieux_liste');
     }
 }
