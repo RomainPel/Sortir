@@ -5,6 +5,7 @@ use App\Entity\Participant;
 use App\Entity\Sortie;
 use App\Entity\Etat;
 use App\Form\SortiesFormType;
+use App\Repository\SortiesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -36,7 +37,7 @@ final class SortiesController extends AbstractController
         $sortie->setEtat($etatCloture);
         $em->flush();
 
-        $this->addFlash('success', 'La sortie a été clôturée avec succès 🚫');
+        $this->addFlash('success', 'La sortie a été clôturée avec succès ✅');
 
         return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
     }
@@ -62,7 +63,33 @@ final class SortiesController extends AbstractController
         $sortie->setEtat($etatOuvert);
         $em->flush();
 
-        $this->addFlash('success', 'La sortie a été publiée avec succès 🚫');
+        $this->addFlash('success', 'La sortie a été publiée avec succès ✅');
+
+        return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
+    }
+
+
+    #[Route('/{id}/annuler', name: 'annuler', methods: ['GET'])]
+    public function annuler(Sortie $sortie, EntityManagerInterface $em, Security $security): Response
+    {
+        $user = $security->getUser();
+
+        if (!$user || $sortie->getOrganisateur() !== $user || !$user->isAdministrateur()) {
+            $this->addFlash('error', 'Seul l’organisateur ou l\'administrateur peut annuler cette sortie.');
+            return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
+        }
+
+        //Récupération de l'état par noEtat
+        $etatOuvert = $em->getRepository(Etat::class)->findOneBy(['noEtat' => 6]);
+        if (!$etatOuvert) {
+            $this->addFlash('error', 'État "Ouverte" introuvable dans la base.');
+            return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
+        }
+
+        $sortie->setEtat($etatOuvert);
+        $em->flush();
+
+        $this->addFlash('success', 'La sortie a été annulée avec succès ✅');
 
         return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
     }
@@ -70,7 +97,7 @@ final class SortiesController extends AbstractController
 
 
 
-    #[Route('/{id}/desinscription', name: 'desinscription')]
+    #[Route('/{id}/desinscription', name: 'desinscription', methods: ['GET'])]
     public function desinscription(Sortie $sortie, EntityManagerInterface $em, Security $security): Response
     {
         $participant = $security->getUser();
@@ -89,7 +116,7 @@ final class SortiesController extends AbstractController
             $em->persist($sortie);
             $em->flush();
 
-            $this->addFlash('success', 'Vous avez été désinscrit avec succès ❌');
+            $this->addFlash('success', 'Vous avez été désinscrit avec succès ✅');
         }
 
         return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
@@ -99,7 +126,7 @@ final class SortiesController extends AbstractController
 
 
 
-    #[Route('/{id}/inscription', name: 'inscription')]
+    #[Route('/{id}/inscription', name: 'inscription', methods: ['GET'])]
     public function inscription(Sortie $sortie, EntityManagerInterface $em, Security $security): Response
     {
         $participant = $security->getUser();
@@ -129,7 +156,7 @@ final class SortiesController extends AbstractController
         return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
     }
 
-    #[Route('/modifier/{id}', name: 'modifier', requirements: ['id' => '\d+'])]
+    #[Route('/{id}/modifier', name: 'modifier', requirements: ['id' => '\d+'], methods: ['GET','POST'])]
     public function modifier(int $id, Request $request, EntityManagerInterface $em): Response
     {
         $sortie = $em->getRepository(Sortie::class)->find($id);
@@ -143,7 +170,7 @@ final class SortiesController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
-            $this->addFlash('success', 'Sortie modifiée avec succès !');
+            $this->addFlash('success', 'Sortie modifiée avec succès ✅');
 
             return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
         }
@@ -154,7 +181,7 @@ final class SortiesController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'details', requirements: ['id' => '\d+'])]
+    #[Route('/{id}', name: 'details', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function detail(int $id, EntityManagerInterface $em): Response
     {
         $sortie = $em->getRepository(Sortie::class)->find($id);
@@ -168,7 +195,7 @@ final class SortiesController extends AbstractController
         ]);
     }
 
-    #[Route('/', name: 'liste')]
+    #[Route('/', name: 'liste', methods: ['GET','POST'])]
     public function index(EntityManagerInterface $em): Response
     {
         $sorties = $em->getRepository(Sortie::class)->findAll();
@@ -178,11 +205,9 @@ final class SortiesController extends AbstractController
         ]);
     }
 
-    #[Route('/ajouter', name: 'ajouter')]
+    #[Route('/ajouter', name: 'ajouter', methods: ['GET','POST'])]
     public function ajouter(Request $request, EntityManagerInterface $em): Response
     {
-
-
 
         $sortie = new Sortie();
         $form = $this->createForm(SortiesFormType::class, $sortie);
@@ -204,7 +229,7 @@ final class SortiesController extends AbstractController
 
             $em->flush();
 
-            $this->addFlash('success', 'Sortie créée avec succès !');
+            $this->addFlash('success', 'Sortie créée avec succès ✅');
 
             return $this->redirectToRoute('sorties_liste');
         }
@@ -212,5 +237,22 @@ final class SortiesController extends AbstractController
         return $this->render('sorties/ajouter.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    #[Route('/{id}/supprimer', name: 'supprimer', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function supprimer(int $id, EntityManagerInterface $em): Response
+    {
+        $sortie = $em->getRepository(Sortie::class)->find($id);
+
+        if (!$sortie) {
+            throw $this->createNotFoundException('Sortie non trouvée.');
+        }
+
+        $em->remove($sortie);
+        $em->flush();
+        $this->addFlash('success', 'Sortie modifiée avec succès ✅');
+
+        return $this->redirectToRoute('sorties_liste');
+
     }
 }

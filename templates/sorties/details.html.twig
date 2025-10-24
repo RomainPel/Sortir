@@ -173,7 +173,8 @@
                             Se désinscrire
                         </a>
                     {% else %}
-                        {% if sortie.etat and sortie.etat.noEtat != 3 %}
+                        <!-- Vérifie si la sortie est avant l'état "clôturée" -->
+                        {% if sortie.etat and sortie.etat.noEtat < 3 %}
                             {% if placesDisponibles %}
                                 <a href="{{ path('sorties_inscription', { id: sortie.id }) }}"
                                    class="btn btn-success btn-lg">
@@ -193,25 +194,39 @@
 
                     {% if sortie.organisateur == app.user %}
                         <a href="{{ path('sorties_modifier', {'id': sortie.id}) }}" class="btn btn-outline-info">
-                            Modifier ma sortie
+                            Modifier la sortie
                         </a>
 
-                        {% if sortie.etat and sortie.etat.noEtat == 1 %}
-                            <a href="{{ path('sorties_publier', {'id': sortie.id}) }}" class="btn btn-outline-warning">
-                                Publier ma sortie
+                        <a href="{{ path('sorties_supprimer', {'id': sortie.id}) }}" class="btn btn-outline-danger">
+                            Supprimer la sortie
+                        </a>
+
+                        <!-- Vérifie si la sortie est avant l'état "publiée" -->
+                        {% if sortie.etat and sortie.etat.noEtat < 2 %}
+                            <a href="{{ path('sorties_publier', {'id': sortie.id}) }}" class="btn btn-outline-success">
+                                Publier la sortie
                             </a>
                         {% endif %}
 
-                        {% if sortie.etat and sortie.etat.noEtat != 1 %}
+                        <!-- Vérifie si la sortie est avant l'état "clôturée" -->
+                        {% if sortie.etat and sortie.etat.noEtat < 3 %}
                             <a href="{{ path('sorties_cloturer', {'id': sortie.id}) }}" class="btn btn-outline-warning">
                                 Clôturer les inscriptions
                             </a>
+                            <!-- Vérifie si la sortie est "clôturée" -->
                         {% elseif sortie.etat and sortie.etat.noEtat == 3 %}
                             <button class="btn btn-warning" disabled>
                                 Inscriptions clôturées
                             </button>
                         {% endif %}
 
+                    {% endif %}
+
+                    <!-- Vérifie si l'utilisateur est l'organisteur ou admin et que la sortie est avant l'état "En cours" -->
+                    {% if (sortie.organisateur == app.user or app.user.isAdministrateur) and sortie.etat and sortie.etat.noEtat < 4 %}
+                        <a href="{{ path('sorties_annuler', {'id': sortie.id}) }}" class="btn btn-outline-danger">
+                            Annuler la sortie
+                        </a>
                     {% endif %}
 
                     <a href="{{ path('sorties_liste') }}" class="btn btn-outline-primary">
