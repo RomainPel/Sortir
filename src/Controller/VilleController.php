@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Ville;
 use App\Form\VilleFormType;
+use App\Repository\VillesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -64,12 +65,23 @@ class VilleController extends AbstractController
 
 
     #[Route('/', name: 'liste')]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(VillesRepository $villeRepository, Request $request): Response
     {
-        $villes = $entityManager->getRepository(Ville::class)->findAll();
+        $search = $request->query->get('search');
+
+        if ($search) {
+            $villes = $villeRepository->createQueryBuilder('v')
+                ->where('v.nomVille LIKE :search')
+                ->setParameter('search', '%'.$search.'%')
+                ->getQuery()
+                ->getResult();
+        } else {
+            $villes = $villeRepository->findAll();
+        }
 
         return $this->render('ville/liste.html.twig', [
             'villes' => $villes,
+            'search' => $search,
         ]);
     }
 
