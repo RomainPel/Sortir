@@ -1,10 +1,23 @@
-{% extends 'base.html.twig' %}
+{% extends '@EasyAdmin/page/content.html.twig' %}
 
-{% block body %}
-    <h2>Importer des utilisateurs</h2>
+{% block content %}
+    <h1 class="mb-4">Importer des utilisateurs CSV</h1>
 
-    <form action="{{ path('admin_import_users') }}" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" accept=".csv" required>
-        <button type="submit">Importer</button>
+    {% if message %}
+        <div class="alert alert-{{ message[0] == 'success' ? 'success' : 'danger' }}">
+            {{ message[1] }}
+        </div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="csv_file" class="form-label">Fichier CSV :</label>
+            <input type="file" name="csv_file" id="csv_file" accept=".csv" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Importer</button>
     </form>
+
+    <hr class="my-4">
+    <p><strong>Format attendu :</strong></p>
+    <pre>pseudo;nom;prenom;telephone;mail;mot_de_passe</pre>
 {% endblock %}
