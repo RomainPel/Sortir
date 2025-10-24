@@ -50,6 +50,18 @@
             {{ form_errors(form.telephone) }}
         </div>
 
+        <div class="mb-3">
+            {{ form_label(form.site) }}
+            {{ form_widget(form.site, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.site) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.photoProfil) }}
+            {{ form_widget(form.photoProfil, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.photoProfil) }}
+        </div>
+
         <div class="d-flex gap-2 mt-3">
             <button class="btn btn-primary">Enregistrer</button>
             <a href="{{ path('profil_view',{id:app.user.id}) }}" class="btn btn-secondary">Annuler</a>

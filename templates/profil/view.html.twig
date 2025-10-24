@@ -6,9 +6,17 @@
     <div class="container mt-4">
         <h1>{{ participant.pseudo }}</h1>
 
+        {% if participant.photoProfil %}
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body p-0">
+                    <img src="{{ asset(app_images_profil_directory ~ '/' ~ participant.photoProfil) }}" alt="Image de la sortie" class="img-fluid rounded">
+                </div>
+            </div>
+        {% endif %}
+
         <ul class="list-group">
-            <li class="list-group-item"><strong>Nom :</strong> {{ participant.nom }}</li>
             <li class="list-group-item"><strong>Prénom :</strong> {{ participant.prenom }}</li>
+            <li class="list-group-item"><strong>Nom :</strong> {{ participant.nom }}</li>
             <li class="list-group-item"><strong>Téléphone :</strong> {{ participant.telephone }}</li>
             <li class="list-group-item"><strong>Email :</strong> {{ participant.mail }}</li>
             {% if participant.site %}
