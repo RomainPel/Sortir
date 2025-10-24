@@ -43,6 +43,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private ?bool $actif = true;
 
     #[ORM\ManyToOne(inversedBy: 'participants')]
+    #[ORM\JoinColumn(nullable: true, onDelete: "SET NULL")]
     private ?Site $site = null;
 
     /**
@@ -56,6 +57,9 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\ManyToMany(targetEntity: Sortie::class, inversedBy: 'participants')]
     private Collection $sortiesInscrit;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $photoProfil = null;
 
     public function __construct()
     {
@@ -243,6 +247,18 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeSortieInscrit(Sortie $sortieInscrit): static
     {
         $this->sortiesInscrit->removeElement($sortieInscrit);
+
+        return $this;
+    }
+
+    public function getPhotoProfil(): ?string
+    {
+        return $this->photoProfil;
+    }
+
+    public function setPhotoProfil(?string $photoProfil): static
+    {
+        $this->photoProfil = $photoProfil;
 
         return $this;
     }

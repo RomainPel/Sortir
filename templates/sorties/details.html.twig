@@ -9,6 +9,19 @@
                 <!-- En-tête avec titre et statut -->
                 <div class="d-flex justify-content-between align-items-start mb-4">
                     <div>
+
+                        {% if sortie.etat and sortie.etat.id != 3 %}
+
+                        {% else %}
+                            <span class="badge bg-light text-dark fs-6 px-3 py-2">
+                       Inscriptions clôturées
+                            </span>
+
+
+                        {% endif %}
+
+
+
                         <h1 class="text-dark mb-2">{{ sortie.nom }}</h1>
                         <p class="text-muted mb-0">
                             <i class="bi bi-calendar-event"></i>
@@ -17,7 +30,15 @@
                     </div>
                     <span class="badge bg-light text-dark fs-6 px-3 py-2">
                         {{ sortie.participants|length }}/{{ sortie.nbinscriptionmax }} inscrits
+
                     </span>
+
+
+
+
+
+
+
                 </div>
 
                 <!-- Card principale avec les détails -->
@@ -149,16 +170,21 @@
                             Se désinscrire
                         </a>
                     {% else %}
-                        {% if placesDisponibles %}
-                            <a href="{{ path('sorties_inscription', { id: sortie.id }) }}"
-                               class="btn btn-success btn-lg">
-                                S'inscrire
-                            </a>
+                        {% if sortie.etat and sortie.etat.id != 3 %}
+                            {% if placesDisponibles %}
+                                <a href="{{ path('sorties_inscription', { id: sortie.id }) }}"
+                                   class="btn btn-success btn-lg">
+                                    S'inscrire
+                                </a>
+                            {% else %}
+                                <button class="btn btn-secondary btn-lg" disabled>
+                                    Complet
+                                </button>
+                            {% endif %}
                         {% else %}
-                            <button class="btn btn-secondary btn-lg" disabled>
-                                Complet
-                            </button>
+
                         {% endif %}
+
                     {% endif %}
 
 
@@ -167,9 +193,16 @@
                             Modifier ma sortie
                         </a>
 
-                        <a href="{{ path('sorties_liste') }}" class="btn btn-outline-warning">
-                            Cloturé les inscriptions
-                        </a>
+                        {% if sortie.etat and sortie.etat.id != 3 %}
+                            <a href="{{ path('sorties_cloturer', {'id': sortie.id}) }}" class="btn btn-outline-warning">
+                                Clôturer les inscriptions
+                            </a>
+                        {% else %}
+                            <button class="btn btn-warning" disabled>
+                                Inscriptions clôturées
+                            </button>
+                        {% endif %}
+
                     {% endif %}
 
                     <a href="{{ path('sorties_liste') }}" class="btn btn-outline-primary">

@@ -37,15 +37,15 @@
                     {{ form_errors(registrationForm.mail) }}
                 </div>
                 <div class="mb-3">
-                    {{ form_label(registrationForm.plainPassword, 'Password', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_label(registrationForm.plainPassword, null, {'label_attr': {'class': 'form-label'}}) }}
                     {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-control'}}) }}
                     {{ form_errors(registrationForm.plainPassword) }}
                 </div>
-                <div class="mb-3 form-check">
+                <!--<div class="mb-3 form-check">
                     {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input'}}) }}
                     {{ form_label(registrationForm.agreeTerms, null, {'label_attr': {'class': 'form-check-label'}}) }}
                     {{ form_errors(registrationForm.agreeTerms) }}
-                </div>
+                </div>-->
                 <button type="submit" class="btn btn-primary">Envoyer</button>
             </div>
         </div>
