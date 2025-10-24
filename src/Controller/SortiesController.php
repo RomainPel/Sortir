@@ -3,6 +3,7 @@
 namespace App\Controller;
 use App\Entity\Participant;
 use App\Entity\Sortie;
+use App\Entity\Etat;
 use App\Form\SortiesFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,6 +15,34 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/sorties', name: 'sorties_')]
 final class SortiesController extends AbstractController
 {
+
+    #[Route('/{id}/cloturer', name: 'cloturer', methods: ['GET'])]
+    public function cloturer(Sortie $sortie, EntityManagerInterface $em, Security $security): Response
+    {
+        $user = $security->getUser();
+
+        if (!$user || $sortie->getOrganisateur() !== $user) {
+            $this->addFlash('error', 'Seul l’organisateur peut clôturer cette sortie.');
+            return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
+        }
+
+        //Récupération de l'état par noEtat
+        $etatCloture = $em->getRepository(Etat::class)->findOneBy(['noEtat' => 3]);
+        if (!$etatCloture) {
+            $this->addFlash('error', 'État "Clôturée" introuvable dans la base.');
+            return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
+        }
+
+        $sortie->setEtat($etatCloture);
+        $em->flush();
+
+        $this->addFlash('success', 'La sortie a été clôturée avec succès 🚫');
+
+        return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
+    }
+
+
+
 
     #[Route('/{id}/desinscription', name: 'desinscription')]
     public function desinscription(Sortie $sortie, EntityManagerInterface $em, Security $security): Response

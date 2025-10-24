@@ -18,11 +18,15 @@ class Etat
     #[ORM\Column(length: 30)]
     private ?string $libelle = null;
 
+
     /**
      * @var Collection<int, Sortie>
      */
     #[ORM\OneToMany(targetEntity: Sortie::class, mappedBy: 'etat')]
     private Collection $sorties;
+
+    #[ORM\Column(nullable: false)]
+    private ?int $noEtat = 0;
 
     public function __construct()
     {
@@ -45,6 +49,8 @@ class Etat
 
         return $this;
     }
+
+
 
     /**
      * @return Collection<int, Sortie>
@@ -72,6 +78,18 @@ class Etat
                 $sortie->setEtat(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getNoEtat(): ?int
+    {
+        return $this->noEtat;
+    }
+
+    public function setNoEtat(?int $noEtat): static
+    {
+        $this->noEtat = $noEtat;
 
         return $this;
     }
