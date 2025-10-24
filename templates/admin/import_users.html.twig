@@ -1,23 +1,30 @@
 {% extends '@EasyAdmin/page/content.html.twig' %}
 
 {% block content %}
-    <h1 class="mb-4">Importer des utilisateurs CSV</h1>
+    <div class="container mt-5" style="max-width: 600px; margin: 0 auto;">
 
-    {% if message %}
-        <div class="alert alert-{{ message[0] == 'success' ? 'success' : 'danger' }}">
-            {{ message[1] }}
+        <h1 class="mb-4 text-center">Importer des utilisateurs CSV</h1>
+
+        {% if message %}
+            <div class="alert alert-{{ message[0] == 'success' ? 'success' : 'danger' }}">
+                {{ message[1] }}
+            </div>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data" class="text-center">
+            <div class="mb-3 text-start">
+                <label for="csv_file" class="form-label fw-bold">Fichier CSV :</label>
+                <input type="file" name="csv_file" id="csv_file" accept=".csv" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Importer</button>
+        </form>
+
+        <hr class="my-4">
+
+        <div class="text-center">
+            <p><strong>Format attendu :</strong></p>
+            <pre class="bg-light p-3 rounded">pseudo;nom;prenom;telephone;mail;mot_de_passe</pre>
         </div>
-    {% endif %}
 
-    <form method="post" enctype="multipart/form-data">
-        <div class="mb-3">
-            <label for="csv_file" class="form-label">Fichier CSV :</label>
-            <input type="file" name="csv_file" id="csv_file" accept=".csv" class="form-control" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Importer</button>
-    </form>
-
-    <hr class="my-4">
-    <p><strong>Format attendu :</strong></p>
-    <pre>pseudo;nom;prenom;telephone;mail;mot_de_passe</pre>
+    </div>
 {% endblock %}

@@ -47,7 +47,7 @@ class AdminImportController extends AbstractController
 
                             // Hash du mot de passe
                             $hashedPassword = $passwordHasher->hashPassword($participant, $password);
-                            $participant->setMotPasse($hashedPassword);
+                            $participant->setMotDePasse($hashedPassword);
 
                             // Valeurs par défaut (si ton entité les a)
                             $participant->setActif(true);
