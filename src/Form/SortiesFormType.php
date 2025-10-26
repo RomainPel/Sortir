@@ -8,12 +8,14 @@ use App\Entity\Lieu;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Image;
 
 class SortiesFormType extends AbstractType
 {
@@ -41,16 +43,22 @@ class SortiesFormType extends AbstractType
                 'required' => false,
                 'label' => 'Description',
             ])
-            ->add('etat', EntityType::class, [
-                'class' => Etat::class,
-                'choice_label' => 'libelle',
-                'placeholder' => 'Choisir un état',
-                'label' => 'État',
-            ])
-            ->add('urlPhoto', UrlType::class, [
+            ->add('urlPhoto',FileType::class,[
+                'mapped' => false,
                 'required' => false,
-                'label' => 'URL de l’image',
-            ]);
+                'constraints' => [
+                    new Image([
+                        'maxSize' => '1024k',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/gif',
+                            'image/bmp'
+                        ],
+                        'mimeTypesMessage' => 'Veuillez télécharger une image avec un format valide',
+                    ])
+                ]])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -6,6 +6,8 @@ use App\Entity\Sortie;
 use App\Entity\Etat;
 use App\Form\SortiesFormType;
 use App\Repository\SortiesRepository;
+use App\Service\FileUploaderProfil;
+use App\Service\FileUploaderSortie;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -157,7 +159,7 @@ final class SortiesController extends AbstractController
     }
 
     #[Route('/{id}/modifier', name: 'modifier', requirements: ['id' => '\d+'], methods: ['GET','POST'])]
-    public function modifier(int $id, Request $request, EntityManagerInterface $em): Response
+    public function modifier(int $id, Request $request, EntityManagerInterface $em, FileUploaderSortie $fileUploader): Response
     {
         $sortie = $em->getRepository(Sortie::class)->find($id);
 
@@ -169,6 +171,11 @@ final class SortiesController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $imageFile = $form->get('urlPhoto')->getData();
+            if($imageFile){
+                $sortie->setUrlPhoto($fileUploader->upload($imageFile));
+            }
+
             $em->flush();
             $this->addFlash('success', 'Sortie modifiée avec succès ✅');
 
@@ -206,7 +213,7 @@ final class SortiesController extends AbstractController
     }
 
     #[Route('/ajouter', name: 'ajouter', methods: ['GET','POST'])]
-    public function ajouter(Request $request, EntityManagerInterface $em): Response
+    public function ajouter(Request $request, EntityManagerInterface $em, FileUploaderSortie $fileUploader): Response
     {
 
         $sortie = new Sortie();
@@ -215,6 +222,11 @@ final class SortiesController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $imageFile = $form->get('urlPhoto')->getData();
+            if($imageFile){
+                $sortie->setUrlPhoto($fileUploader->upload($imageFile));
+            }
+
             $sortie->setOrganisateur($this->getUser());
 
             //Récupération de l'état par noEtat

@@ -24,16 +24,6 @@
                                     </div>
                                 </div>
 
-
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        {{ form_label(form.nbinscriptionmax, 'Nombre maximum de personne', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
-                                        {{ form_widget(form.nbinscriptionmax, {'attr': {'class': 'form-control', 'placeholder': 'Ex: Randonnée au parc'}}) }}
-                                        <div class="text-danger">{{ form_errors(form.nbinscriptionmax) }}</div>
-                                    </div>
-                                </div>
-
-
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         {{ form_label(form.lieu, 'Lieu', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
@@ -44,7 +34,7 @@
 
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        {{ form_label(form.datedebut, 'Date et heure de début', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                                        {{ form_label(form.datedebut, 'Date et heure de la sortie', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
                                         {{ form_widget(form.datedebut, {'attr': {'class': 'form-control'}}) }}
                                         <div class="text-danger">{{ form_errors(form.datedebut) }}</div>
                                     </div>
@@ -52,9 +42,9 @@
 
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        {{ form_label(form.duree, 'Durée (minutes)', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
-                                        {{ form_widget(form.duree, {'attr': {'class': 'form-control', 'placeholder': 'Ex: 120'}}) }}
-                                        <div class="text-danger">{{ form_errors(form.duree) }}</div>
+                                        {{ form_label(form.nbinscriptionmax, 'Nombre maximum de personne', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                                        {{ form_widget(form.nbinscriptionmax, {'attr': {'class': 'form-control', 'placeholder': 'Ex: Randonnée au parc'}}) }}
+                                        <div class="text-danger">{{ form_errors(form.nbinscriptionmax) }}</div>
                                     </div>
                                 </div>
 
@@ -68,17 +58,17 @@
 
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        {{ form_label(form.descriptioninfos, 'Description', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
-                                        {{ form_widget(form.descriptioninfos, {'attr': {'class': 'form-control', 'rows': 4, 'placeholder': 'Décrivez la sortie'}}) }}
-                                        <div class="text-danger">{{ form_errors(form.descriptioninfos) }}</div>
+                                        {{ form_label(form.duree, 'Durée (minutes)', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                                        {{ form_widget(form.duree, {'attr': {'class': 'form-control', 'placeholder': 'Ex: 120'}}) }}
+                                        <div class="text-danger">{{ form_errors(form.duree) }}</div>
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        {{ form_label(form.etat, 'Etat', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
-                                        {{ form_widget(form.etat, {'attr': {'class': 'form-control', 'rows': 4, 'placeholder': 'Décrivez la sortie'}}) }}
-                                        <div class="text-danger">{{ form_errors(form.etat) }}</div>
+                                        {{ form_label(form.descriptioninfos, 'Description', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                                        {{ form_widget(form.descriptioninfos, {'attr': {'class': 'form-control', 'rows': 4, 'placeholder': 'Décrivez la sortie'}}) }}
+                                        <div class="text-danger">{{ form_errors(form.descriptioninfos) }}</div>
                                     </div>
                                 </div>
 

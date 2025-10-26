@@ -23,10 +23,6 @@
 
 
                         <h1 class="text-dark mb-2">{{ sortie.nom }}</h1>
-                        <p class="text-muted mb-0">
-                            <i class="bi bi-calendar-event"></i>
-                            {{ sortie.datedebut|date('d/m/Y à H:i') }}
-                        </p>
                     </div>
                     <span class="badge bg-light text-dark fs-6 px-3 py-2">
                         {{ sortie.participants|length }}/{{ sortie.nbinscriptionmax }} inscrits
@@ -46,37 +42,55 @@
                     <div class="card-body p-4">
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <div class="detail-item">
-                                    <span class="detail-label">📍 Lieu :</span>
-                                    <span class="detail-value">{{ sortie.lieu.nomlieu ?? 'Non précisé' }}</span>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="detail-item">
-                                    <span class="detail-label">⏱️ Durée :</span>
-                                    <span class="detail-value">{{ sortie.duree ?? 'Non précisé' }} minutes</span>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="detail-item">
-                                    <span class="detail-label">🗓️ Date de début :</span>
+                                <div class="detail-item mb-3">
+                                    <span class="detail-label">🗓️ <u>Date de la sortie :</u></span>
                                     <span class="detail-value">{{ sortie.datedebut|date('d/m/Y H:i') }}</span>
                                 </div>
-                            </div>
 
-                            <div class="col-md-6">
-                                <div class="detail-item">
-                                    <span class="detail-label">🔒 Clôture inscriptions :</span>
+                                <div class="detail-item mb-3">
+                                    <span class="detail-label">🔒 <u>Clôture inscriptions :</u></span>
                                     <span class="detail-value">{{ sortie.datecloture|date('d/m/Y H:i') }}</span>
                                 </div>
-                            </div>
 
-                            <div class="col-12">
-                                <div class="detail-item">
-                                    <span class="detail-label">📝 Description :</span>
+                                <div class="detail-item mb-3">
+                                    <span class="detail-label">⏱️ <u>Durée :</u></span>
+                                    <span class="detail-value">{{ sortie.duree ?? 'Non précisé' }} minutes</span>
+                                </div>
+
+                                <div class="detail-item mb-3">
+                                    <span class="detail-label">📝 <u>Description :</u></span>
                                     <span class="detail-value">{{ sortie.descriptioninfos ?? 'Aucune description disponible' }}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="detail-item mb-3">
+                                    <span class="detail-label">📍 <u>Lieu :</u></span>
+                                    <span class="detail-value">{{ sortie.lieu.nomlieu ?? 'Non précisé' }}</span>
+                                </div>
+
+                                <div class="detail-item mb-3">
+                                    <span class="detail-label">📍 <u>Rue :</u></span>
+                                    <span class="detail-value">{{ sortie.lieu.rue ?? 'Non précisé' }}</span>
+                                </div>
+
+                                <div class="detail-item mb-3">
+                                    <span class="detail-label">📍 <u>Ville :</u></span>
+                                    <span class="detail-value">{{ sortie.lieu.ville.nomVille ?? 'Non précisé' }}</span>
+                                </div>
+
+                                <div class="detail-item mb-3">
+                                    <span class="detail-label">📍 <u>Code Postal :</u></span>
+                                    <span class="detail-value">{{ sortie.lieu.ville.codePostal ?? 'Non précisé' }}</span>
+                                </div>
+
+                                <div class="detail-item mb-3">
+                                    <span class="detail-label">📍 <u>Latitude :</u></span>
+                                    <span class="detail-value">{{ sortie.lieu.latitude ?? 'Non précisé' }}</span>
+                                </div>
+
+                                <div class="detail-item mb-3">
+                                    <span class="detail-label">📍 <u>Longitude :</u></span>
+                                    <span class="detail-value">{{ sortie.lieu.longitude ?? 'Non précisé' }}</span>
                                 </div>
                             </div>
                         </div>

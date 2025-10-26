@@ -3,7 +3,7 @@ namespace App\Service;
 
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
-final class FileUploader
+final class FileUploaderProfil
 {
     public function __construct(private readonly string $targetDirectory) {}
 

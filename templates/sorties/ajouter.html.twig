@@ -7,63 +7,91 @@
         <h1 class="mb-4">Ajouter une Sortie</h1>
 
         {{ form_start(form) }}
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    {{ form_label(form.nom) }}
+                    {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.nom) }}
+                </div>
 
-        <div class="mb-3">
-            {{ form_label(form.nom) }}
-            {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.nom) }}
+                <div class="mb-3">
+                    {{ form_label(form.datedebut) }}
+                    {{ form_widget(form.datedebut, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.datedebut) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.datecloture) }}
+                    {{ form_widget(form.datecloture, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.datecloture) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.nbinscriptionmax) }}
+                    {{ form_widget(form.nbinscriptionmax, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.nbinscriptionmax) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.duree) }}
+                    {{ form_widget(form.duree, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.duree) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.descriptioninfos) }}
+                    {{ form_widget(form.descriptioninfos, {'attr': {'class': 'form-control', 'rows': 3}}) }}
+                    {{ form_errors(form.descriptioninfos) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.urlPhoto) }}
+                    {{ form_widget(form.urlPhoto, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.urlPhoto) }}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    {{ form_label(form.lieu) }}
+                    {{ form_widget(form.lieu, {'attr': {'class': 'form-select'}}) }}
+                    {{ form_errors(form.lieu) }}
+                </div>
+
+                <fieldset class="border border-dark-subtle rounded-3 p-3">
+                    <legend>Informations sur le lieu</legend>
+                    <div class=" mb-3">
+                        <p class="detail-label">Rue</p>
+                        <p class="detail-value">{{ form.lieu.rue ?? 'Non précisé' }}</p>
+                    </div>
+
+                    <div class=" mb-3">
+                        <p class="detail-label">Ville</p>
+                        <p class="detail-value">{{ form.lieu.ville.nomVille ?? 'Non précisé' }}</p>
+                    </div>
+
+                    <div class=" mb-3">
+                        <p class="detail-label">Code Postal</p>
+                        <p class="detail-value">{{ form.lieu.ville.codePostal ?? 'Non précisé' }}</p>
+                    </div>
+
+                    <div class=" mb-3">
+                        <p class="detail-label">Latitude</p>
+                        <p class="detail-value">{{ form.lieu.latitude ?? 'Non précisé' }}</p>
+                    </div>
+
+                    <div class=" mb-3">
+                        <p class="detail-label">Longitude</p>
+                        <p class="detail-value">{{ form.lieu.longitude ?? 'Non précisé' }}</p>
+                    </div>
+                </fieldset>
+            </div>
         </div>
 
-        <div class="mb-3">
-            {{ form_label(form.lieu) }}
-            {{ form_widget(form.lieu, {'attr': {'class': 'form-select'}}) }}
-            {{ form_errors(form.lieu) }}
+        <div class="text-center">
+            <button class="btn btn-primary mt-2">Enregistrer</button>
+            <a href="{{ path('sorties_liste') }}" class="btn btn-secondary mt-2">Retour à la liste</a>
         </div>
-
-        <div class="mb-3">
-            {{ form_label(form.datedebut) }}
-            {{ form_widget(form.datedebut, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.datedebut) }}
-        </div>
-
-        <div class="mb-3">
-            {{ form_label(form.duree) }}
-            {{ form_widget(form.duree, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.duree) }}
-        </div>
-
-        <div class="mb-3">
-            {{ form_label(form.datecloture) }}
-            {{ form_widget(form.datecloture, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.datecloture) }}
-        </div>
-
-        <div class="mb-3">
-            {{ form_label(form.nbinscriptionmax) }}
-            {{ form_widget(form.nbinscriptionmax, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.nbinscriptionmax) }}
-        </div>
-
-        <div class="mb-3">
-            {{ form_label(form.descriptioninfos) }}
-            {{ form_widget(form.descriptioninfos, {'attr': {'class': 'form-control', 'rows': 3}}) }}
-            {{ form_errors(form.descriptioninfos) }}
-        </div>
-
-        <div class="mb-3">
-            {{ form_label(form.etat) }}
-            {{ form_widget(form.etat, {'attr': {'class': 'form-select'}}) }}
-            {{ form_errors(form.etat) }}
-        </div>
-
-        <div class="mb-3">
-            {{ form_label(form.urlPhoto) }}
-            {{ form_widget(form.urlPhoto, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.urlPhoto) }}
-        </div>
-
-        <button class="btn btn-primary mt-2">Enregistrer</button>
-        <a href="{{ path('sorties_liste') }}" class="btn btn-secondary mt-2">Retour à la liste</a>
 
         {{ form_end(form) }}
     </div>

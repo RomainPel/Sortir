@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Participant;
 use App\Form\ProfilFormType;
-use App\Service\FileUploader;
+use App\Service\FileUploaderProfil;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,7 +29,7 @@ public function detailProfil(int $id, EntityManagerInterface $em): Response
 }
 
 #[Route('/{id}/modifier', name: 'edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-public function modifierProfil(Participant $participant, Request $request, EntityManagerInterface $em, FileUploader $fileUploader): Response
+public function modifierProfil(Participant $participant, Request $request, EntityManagerInterface $em, FileUploaderProfil $fileUploader): Response
 {
     if (!$participant) {
         throw $this->createNotFoundException('Participant non trouvé');
