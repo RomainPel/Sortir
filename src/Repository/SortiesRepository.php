@@ -5,15 +5,57 @@ namespace App\Repository;
 use App\Entity\Sortie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bundle\SecurityBundle\Security;
 
 /**
  * @extends ServiceEntityRepository<Sortie>
  */
 class SortiesRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $security;
+
+    public function __construct(ManagerRegistry $registry, Security $security)
     {
         parent::__construct($registry, Sortie::class);
+        $this->security = $security;
+    }
+
+    public function findByFilters(array $filters): array
+    {
+        $user = $this->security->getUser();
+        $qb = $this->createQueryBuilder('s');
+
+        if (!empty($filters['nomSortie'])) {
+            $qb->andWhere('s.category = :category')
+                ->setParameter('nomSortie', $filters['nomSortie']);
+        }
+
+        if (!empty($filters['site'])) {
+            $qb->andWhere('s.site_organisateur_id = :site')
+                ->setParameter('site', $filters['site']);
+        }
+
+        if (!empty($filters['etat'])) {
+            $qb->andWhere('s.etat_id <= :etat')
+                ->setParameter('etat', $filters['etat']);
+        }
+
+        if (!empty($filters['estOrganiqateur'])) {
+            $qb->andWhere('s.organiqateur_id = :user')
+                ->setParameter('user', $user->getId());
+        }
+
+//        if (!empty($filters['estInscrit'])) {
+//            $qb->andWhere('s.stock > 0')
+//                ->setParameter('user', $user->getId());
+//        }
+//
+//        if (!empty($filters['estPasInscrit'])) {
+//            $qb->andWhere('s.stock > 0')
+//                ->setParameter('user', $user->getId());
+//        }
+
+        return $qb->getQuery()->getResult();
     }
 
     //    /**

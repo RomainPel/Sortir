@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Entity\Participant;
 use App\Entity\Sortie;
 use App\Entity\Etat;
+use App\Form\FiltreSortieFormType;
 use App\Form\SortiesFormType;
 use App\Repository\SortiesRepository;
 use App\Service\FileUploaderProfil;
@@ -203,9 +204,17 @@ final class SortiesController extends AbstractController
     }
 
     #[Route('/', name: 'liste', methods: ['GET','POST'])]
-    public function index(EntityManagerInterface $em): Response
+    public function index(EntityManagerInterface $em, Request $request): Response
     {
-        $sorties = $em->getRepository(Sortie::class)->findAll();
+        $filtreForm = $this->createForm(FiltreSortieFormType::class);
+        $filtreForm->handleRequest($request);
+
+        if ($filtreForm->isSubmitted() && $filtreForm->isValid()) {
+            $filtres = $filtreForm->getData();
+            $sorties = $em->getRepository(Sortie::class)->findByFilters($filtres);
+        } else {
+            $sorties = $em->getRepository(Sortie::class)->findAll();
+        }
 
         return $this->render('sorties/liste.html.twig', [
             'sorties' => $sorties,
