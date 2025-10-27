@@ -47,41 +47,41 @@
 
                 <div class="mb-3">
                     {{ form_label(form.urlPhoto) }}
-                    {{ form_widget(form.urlPhoto, {'attr': {'class': 'form-control', 'id': 'sortie_lieu'}}) }}
+                    {{ form_widget(form.urlPhoto, {'attr': {'class': 'form-control'}}) }}
                     {{ form_errors(form.urlPhoto) }}
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="mb-3">
                     {{ form_label(form.lieu) }}
-                    {{ form_widget(form.lieu, {'attr': {'class': 'form-select'}}) }}
+                    {{ form_widget(form.lieu, {'id': 'sortie_lieu', 'attr': {'class': 'form-select'}}) }}
                     {{ form_errors(form.lieu) }}
                 </div>
 
                 <fieldset class="border border-dark-subtle rounded-3 p-3">
                     <legend>Informations sur le lieu</legend>
                     <div class="mb-3">
-                        <p class="detail-label">Rue</p>
+                        <p class="detail-label"><strong>Rue</strong></p>
                         <p class="detail-value" id="lieu-rue">Non précisé</p>
                     </div>
 
                     <div class="mb-3">
-                        <p class="detail-label">Ville</p>
+                        <p class="detail-label"><strong>Ville</strong></p>
                         <p class="detail-value" id="lieu-ville">Non précisé</p>
                     </div>
 
                     <div class="mb-3">
-                        <p class="detail-label">Code Postal</p>
+                        <p class="detail-label"><strong>Code Postal</strong></p>
                         <p class="detail-value" id="lieu-cp">Non précisé</p>
                     </div>
 
                     <div class="mb-3">
-                        <p class="detail-label">Latitude</p>
+                        <p class="detail-label"><strong>Latitude</strong></p>
                         <p class="detail-value" id="lieu-latitude">Non précisé</p>
                     </div>
 
                     <div class="mb-3">
-                        <p class="detail-label">Longitude</p>
+                        <p class="detail-label"><strong>Longitude</strong></p>
                         <p class="detail-value" id="lieu-longitude">Non précisé</p>
                     </div>
                 </fieldset>
@@ -98,15 +98,20 @@
 {% endblock %}
 
 {% block javascripts %}
+    {{ parent() }}
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const lieuSelect = document.querySelector('#sortie_lieu');
+            if (!lieuSelect) {
+                console.error("Champ lieu introuvable !");
+                return;
+            }
             const fields = {
                 rue: document.querySelector('#lieu-rue'),
                 ville: document.querySelector('#lieu-ville'),
                 cp: document.querySelector('#lieu-cp'),
-                lat: document.querySelector('#lieu-latitude'),
-                lon: document.querySelector('#lieu-longitude')
+                latitude: document.querySelector('#lieu-latitude'),
+                longitude: document.querySelector('#lieu-longitude')
             };
 
             lieuSelect.addEventListener('change', async () => {
@@ -124,8 +129,8 @@
                     fields.rue.textContent = data.rue || 'Non précisé';
                     fields.ville.textContent = data.ville || 'Non précisé';
                     fields.cp.textContent = data.codePostal || 'Non précisé';
-                    fields.lat.textContent = data.latitude || 'Non précisé';
-                    fields.lon.textContent = data.longitude || 'Non précisé';
+                    fields.latitude.textContent = data.latitude || 'Non précisé';
+                    fields.longitude.textContent = data.longitude || 'Non précisé';
                 } catch (error) {
                     console.error(error);
                     Object.values(fields).forEach(el => el.textContent = 'Erreur');

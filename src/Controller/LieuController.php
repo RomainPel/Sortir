@@ -108,12 +108,20 @@ class LieuController extends AbstractController
             return new JsonResponse(['error' => 'Lieu non trouvé'], 404);
         }
 
-        return new JsonResponse([
-            'rue' => $lieu->getRue(),
-            'ville' => $lieu->getVille()->getNomVille(),
-            'codePostal' => $lieu->getVille()->getCodePostal(),
-            'latitude' => $lieu->getLatitude(),
-            'longitude' => $lieu->getLongitude(),
-        ]);
+        if ($lieu->getVille()) {
+            return new JsonResponse([
+                'rue' => $lieu->getRue(),
+                'ville' => $lieu->getVille()->getNomVille(),
+                'codePostal' => $lieu->getVille()->getCodePostal(),
+                'latitude' => $lieu->getLatitude(),
+                'longitude' => $lieu->getLongitude(),
+            ]);
+        } else {
+            return new JsonResponse([
+                'rue' => $lieu->getRue(),
+                'latitude' => $lieu->getLatitude(),
+                'longitude' => $lieu->getLongitude(),
+            ]);
+        }
     }
 }
