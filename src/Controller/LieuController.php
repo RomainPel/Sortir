@@ -7,6 +7,7 @@ use App\Form\LieuFormType;
 use App\Repository\LieuxRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -96,5 +97,23 @@ class LieuController extends AbstractController
         $this->addFlash('success', 'Lieu supprimé avec succès !');
 
         return $this->redirectToRoute('lieux_liste');
+    }
+
+    #[Route('/infos/{id}', name: '_infos', methods: ['GET'])]
+    public function getLieuInfos(LieuxRepository $lieuRepository, int $id): JsonResponse
+    {
+        $lieu = $lieuRepository->find($id);
+
+        if (!$lieu) {
+            return new JsonResponse(['error' => 'Lieu non trouvé'], 404);
+        }
+
+        return new JsonResponse([
+            'rue' => $lieu->getRue(),
+            'ville' => $lieu->getVille()->getNomVille(),
+            'codePostal' => $lieu->getVille()->getCodePostal(),
+            'latitude' => $lieu->getLatitude(),
+            'longitude' => $lieu->getLongitude(),
+        ]);
     }
 }

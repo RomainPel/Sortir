@@ -47,7 +47,7 @@
 
                 <div class="mb-3">
                     {{ form_label(form.urlPhoto) }}
-                    {{ form_widget(form.urlPhoto, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_widget(form.urlPhoto, {'attr': {'class': 'form-control', 'id': 'sortie_lieu'}}) }}
                     {{ form_errors(form.urlPhoto) }}
                 </div>
             </div>
@@ -60,29 +60,29 @@
 
                 <fieldset class="border border-dark-subtle rounded-3 p-3">
                     <legend>Informations sur le lieu</legend>
-                    <div class=" mb-3">
+                    <div class="mb-3">
                         <p class="detail-label">Rue</p>
-                        <p class="detail-value">{{ form.lieu.rue ?? 'Non précisé' }}</p>
+                        <p class="detail-value" id="lieu-rue">Non précisé</p>
                     </div>
 
-                    <div class=" mb-3">
+                    <div class="mb-3">
                         <p class="detail-label">Ville</p>
-                        <p class="detail-value">{{ form.lieu.ville.nomVille ?? 'Non précisé' }}</p>
+                        <p class="detail-value" id="lieu-ville">Non précisé</p>
                     </div>
 
-                    <div class=" mb-3">
+                    <div class="mb-3">
                         <p class="detail-label">Code Postal</p>
-                        <p class="detail-value">{{ form.lieu.ville.codePostal ?? 'Non précisé' }}</p>
+                        <p class="detail-value" id="lieu-cp">Non précisé</p>
                     </div>
 
-                    <div class=" mb-3">
+                    <div class="mb-3">
                         <p class="detail-label">Latitude</p>
-                        <p class="detail-value">{{ form.lieu.latitude ?? 'Non précisé' }}</p>
+                        <p class="detail-value" id="lieu-latitude">Non précisé</p>
                     </div>
 
-                    <div class=" mb-3">
+                    <div class="mb-3">
                         <p class="detail-label">Longitude</p>
-                        <p class="detail-value">{{ form.lieu.longitude ?? 'Non précisé' }}</p>
+                        <p class="detail-value" id="lieu-longitude">Non précisé</p>
                     </div>
                 </fieldset>
             </div>
@@ -95,4 +95,42 @@
 
         {{ form_end(form) }}
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const lieuSelect = document.querySelector('#sortie_lieu');
+            const fields = {
+                rue: document.querySelector('#lieu-rue'),
+                ville: document.querySelector('#lieu-ville'),
+                cp: document.querySelector('#lieu-cp'),
+                lat: document.querySelector('#lieu-latitude'),
+                lon: document.querySelector('#lieu-longitude')
+            };
+
+            lieuSelect.addEventListener('change', async () => {
+                const lieuId = lieuSelect.value;
+                if (!lieuId) {
+                    Object.values(fields).forEach(el => el.textContent = 'Non précisé');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/lieux/infos/${lieuId}`);
+                    if (!response.ok) throw new Error('Erreur serveur');
+                    const data = await response.json();
+
+                    fields.rue.textContent = data.rue || 'Non précisé';
+                    fields.ville.textContent = data.ville || 'Non précisé';
+                    fields.cp.textContent = data.codePostal || 'Non précisé';
+                    fields.lat.textContent = data.latitude || 'Non précisé';
+                    fields.lon.textContent = data.longitude || 'Non précisé';
+                } catch (error) {
+                    console.error(error);
+                    Object.values(fields).forEach(el => el.textContent = 'Erreur');
+                }
+            });
+        });
+    </script>
 {% endblock %}
