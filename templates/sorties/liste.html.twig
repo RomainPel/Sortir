@@ -10,6 +10,63 @@
             <a href="{{ path('sorties_ajouter') }}" class="btn btn-outline-success px-3">➕ Ajouter une sortie
             </a>
         </div>
+        <form method="get" action="{{ path('sorties_liste') }}" class="mb-4">
+            <div class="row g-2 align-items-end">
+
+                <div class="col-md-3">
+                    <label class="form-label">Recherche</label>
+                    <input type="text" name="q" value="{{ app.request.get('q') }}" class="form-control" placeholder="🔎 Nom de la sortie...">
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Site</label>
+                    <select name="site" class="form-select">
+                        <option value="">Tous les sites</option>
+                        {% for s in sites %}
+                            <option value="{{ s.nomSite }}" {{ app.request.get('site') == s.nomSite ? 'selected' }}>{{ s.nomSite }}</option>
+
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label">Entre le</label>
+                    <input type="date" name="dateDebut" value="{{ app.request.get('dateDebut') }}" class="form-control">
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label">Et le</label>
+                    <input type="date" name="dateFin" value="{{ app.request.get('dateFin') }}" class="form-control">
+                </div>
+
+                <div class="col-md-2 text-end">
+                    <button type="submit" class="btn btn-primary w-100">Filtrer</button>
+                </div>
+            </div>
+
+            <div class="row mt-3 g-2">
+                <div class="col-md-2 form-check">
+                    <input type="checkbox" name="inscrit" id="inscrit" class="form-check-input" {{ app.request.get('inscrit') ? 'checked' }}>
+                    <label for="inscrit" class="form-check-label">Je suis inscrit(e)</label>
+                </div>
+
+                <div class="col-md-3 form-check">
+                    <input type="checkbox" name="nonInscrit" id="nonInscrit" class="form-check-input" {{ app.request.get('nonInscrit') ? 'checked' }}>
+                    <label for="nonInscrit" class="form-check-label">Je ne suis pas inscrit(e)</label>
+                </div>
+
+                <div class="col-md-3 form-check">
+                    <input type="checkbox" name="organisateur" id="organisateur" class="form-check-input" {{ app.request.get('organisateur') ? 'checked' }}>
+                    <label for="organisateur" class="form-check-label">J’organise</label>
+                </div>
+
+                <div class="col-md-3 form-check">
+                    <input type="checkbox" name="terminee" id="terminee" class="form-check-input" {{ app.request.get('terminee') ? 'checked' }}>
+                    <label for="terminee" class="form-check-label">Sorties terminées</label>
+                </div>
+            </div>
+        </form>
+
 
         {% if sorties is empty %}
             <div class="alert alert-info text-center shadow-sm rounded-3">
