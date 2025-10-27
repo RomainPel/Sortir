@@ -31,17 +31,17 @@ class SortiesRepository extends ServiceEntityRepository
         }
 
         if (!empty($filters['site'])) {
-            $qb->andWhere('s.site_organisateur_id = :site')
+            $qb->andWhere('s.siteOrganisateur = :site')
                 ->setParameter('site', $filters['site']);
         }
 
         if (!empty($filters['etat'])) {
-            $qb->andWhere('s.etat_id <= :etat')
+            $qb->andWhere('s.etat <= :etat')
                 ->setParameter('etat', $filters['etat']);
         }
 
         if (!empty($filters['estOrganiqateur'])) {
-            $qb->andWhere('s.organiqateur_id = :user')
+            $qb->andWhere('s.organiqateur = :user')
                 ->setParameter('user', $user->getId());
         }
 
