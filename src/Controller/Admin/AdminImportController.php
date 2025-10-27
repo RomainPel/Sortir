@@ -32,7 +32,6 @@ class AdminImportController extends AbstractController
                     $filepath = $this->getParameter('kernel.project_dir') . '/public/uploads/' . $filename;
 
                     if (($handle = fopen($filepath, 'r')) !== false) {
-                        // Ignore header line
                         fgetcsv($handle, 1000, ';');
 
                         while (($data = fgetcsv($handle, 1000, ';')) !== false) {
@@ -45,11 +44,9 @@ class AdminImportController extends AbstractController
                             $participant->setTelephone($telephone);
                             $participant->setMail($mail);
 
-                            // Hash du mot de passe
                             $hashedPassword = $passwordHasher->hashPassword($participant, $password);
                             $participant->setMotDePasse($hashedPassword);
 
-                            // Valeurs par défaut (si ton entité les a)
                             $participant->setActif(true);
 
                             $entityManager->persist($participant);
