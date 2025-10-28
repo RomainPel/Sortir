@@ -5,11 +5,11 @@ namespace App\Controller;
 use App\Entity\Participant;
 use App\Entity\Sortie;
 use App\Entity\Etat;
-use App\Form\FiltreSortieFormType;
+use App\Entity\Site;
 use App\Form\SortiesFormType;
+use App\Service\FileUploaderSortie;
 use DateInterval;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Service\FileUploaderSortie;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -21,51 +21,17 @@ use Symfony\Component\Routing\Annotation\Route;
 final class SortiesController extends AbstractController
 {
     // ------------------------- LISTE DES SORTIES -------------------------
-    #[Route('/', name: 'liste', methods: ['GET','POST'])]
+    #[Route('/', name: 'liste', methods: ['GET', 'POST'])]
     public function liste(Request $request, EntityManagerInterface $em, Security $security): Response
     {
-        // Définir date et heure actuelle avec le bon fuseau horaire
         date_default_timezone_set('Europe/Paris');
         $dateJour = new \DateTime();
 
-        // Mise à jour des états des sorties
+        // 🔁 Mise à jour automatique des états
         $sorties = $em->getRepository(Sortie::class)->findAll();
         foreach ($sorties as $sortie) {
-            //Déclaration variables dates
-            $dateClotureInscriptions = $sortie->getDateCloture();
-            $dateDebutSortie = $sortie->getDateDebut();
-
-            $dateFinSortie = $sortie->getDateDebut();
-            $dateFinSortie->add(new DateInterval('PT' . $sortie->getDuree() . 'M'));
-
-            //Mise à jour de l'état de la sortie
-            if($dateJour >= $dateFinSortie){
-                $etat = $em->getRepository(Etat::class)->findOneBy(['noEtat' => 5]);
-                if (!$etat) {
-                    $this->addFlash('error', 'État "Passée" introuvable.');
-                    return $this->redirectToRoute('sorties_liste');
-                }
-
-                $sortie->setEtat($etat);
-            }elseif($dateJour >= $dateDebutSortie){
-                $etat = $em->getRepository(Etat::class)->findOneBy(['noEtat' => 4]);
-                if (!$etat) {
-                    $this->addFlash('error', 'État "En cours" introuvable.');
-                    return $this->redirectToRoute('sorties_liste');
-                }
-
-                $sortie->setEtat($etat);
-            }elseif($dateJour >= $dateClotureInscriptions){
-                $etat = $em->getRepository(Etat::class)->findOneBy(['noEtat' => 3]);
-                if (!$etat) {
-                    $this->addFlash('error', 'État "Clôturée" introuvable.');
-                    return $this->redirectToRoute('sorties_liste');
-                }
-
-                $sortie->setEtat($etat);
-            }
+            $this->updateEtatSortie($sortie, $em, $dateJour);
         }
-
         $em->flush();
 
         $user = $security->getUser();
@@ -78,52 +44,45 @@ final class SortiesController extends AbstractController
             ->addSelect('site', 'etat', 'p')
             ->orderBy('s.dateDebut', 'ASC');
 
-        // Recherche par nom de sortie
+        // 🔍 Filtres dynamiques
         if ($q = $request->query->get('q')) {
             $qb->andWhere('LOWER(s.nom) LIKE LOWER(:q)')
                 ->setParameter('q', "%$q%");
         }
 
-        // Filtre par site
         if ($site = $request->query->get('site')) {
             $qb->andWhere('LOWER(site.nomSite) = LOWER(:site)')
                 ->setParameter('site', $site);
         }
 
-        // Filtre par date
         if ($dateDebut = $request->query->get('dateDebut')) {
             $qb->andWhere('s.dateDebut >= :dateDebut')
                 ->setParameter('dateDebut', new \DateTime($dateDebut));
         }
+
         if ($dateFin = $request->query->get('dateFin')) {
             $qb->andWhere('s.dateDebut <= :dateFin')
                 ->setParameter('dateFin', new \DateTime($dateFin));
         }
 
-        // Filtre par inscription
         if ($request->query->get('inscrit')) {
-            $qb->andWhere(':user MEMBER OF s.participants')
-                ->setParameter('user', $user);
+            $qb->andWhere(':user MEMBER OF s.participants')->setParameter('user', $user);
         }
+
         if ($request->query->get('nonInscrit')) {
-            $qb->andWhere(':user NOT MEMBER OF s.participants')
-                ->setParameter('user', $user);
+            $qb->andWhere(':user NOT MEMBER OF s.participants')->setParameter('user', $user);
         }
 
-        // Filtre organisateur
         if ($request->query->get('organisateur')) {
-            $qb->andWhere('s.organisateur = :user')
-                ->setParameter('user', $user);
+            $qb->andWhere('s.organisateur = :user')->setParameter('user', $user);
         }
 
-        // Filtre sorties terminées
         if ($request->query->get('terminee')) {
-            $qb->andWhere('etat.noEtat = :noEtat')
-                ->setParameter('noEtat', 5);
+            $qb->andWhere('etat.noEtat = 5');
         }
 
         $sorties = $qb->getQuery()->getResult();
-        $sites = $em->getRepository(\App\Entity\Site::class)->findAll();
+        $sites = $em->getRepository(Site::class)->findAll();
 
         return $this->render('sorties/liste.html.twig', [
             'sorties' => $sorties,
@@ -137,54 +96,19 @@ final class SortiesController extends AbstractController
     {
         $sortie = $em->getRepository(Sortie::class)->find($id);
         if (!$sortie) {
-            throw $this->createNotFoundException('Sortie non trouvée');
+            throw $this->createNotFoundException('Sortie non trouvée.');
         }
 
-        // Définir date et heure actuelle avec le bon fuseau horaire
-        date_default_timezone_set('Europe/Paris');
-        $dateJour = new \DateTime();
-
-        //Déclaration variables dates
-        $dateClotureInscriptions = $sortie->getDateCloture();
-        $dateDebutSortie = $sortie->getDateDebut();
-
-        $dateFinSortie = $sortie->getDateDebut();
-        $dateFinSortie->add(new DateInterval('PT' . $sortie->getDuree() . 'M'));
-
-        //Mise à jour de l'état de la sortie
-        if($dateJour >= $dateFinSortie){
-            $etat = $em->getRepository(Etat::class)->findOneBy(['noEtat' => 5]);
-            if (!$etat) {
-                $this->addFlash('error', 'État "Passée" introuvable.');
-                return $this->redirectToRoute('sorties_liste');
-            }
-
-            $sortie->setEtat($etat);
-        }elseif($dateJour >= $dateDebutSortie){
-            $etat = $em->getRepository(Etat::class)->findOneBy(['noEtat' => 4]);
-            if (!$etat) {
-                $this->addFlash('error', 'État "En cours" introuvable.');
-                return $this->redirectToRoute('sorties_liste');
-            }
-
-            $sortie->setEtat($etat);
-        }elseif($dateJour >= $dateClotureInscriptions){
-            $etat = $em->getRepository(Etat::class)->findOneBy(['noEtat' => 3]);
-            if (!$etat) {
-                $this->addFlash('error', 'État "Clôturée" introuvable.');
-                return $this->redirectToRoute('sorties_liste');
-            }
-
-            $sortie->setEtat($etat);
-        }
+        $this->updateEtatSortie($sortie, $em, new \DateTime('now', new \DateTimeZone('Europe/Paris')));
+        $em->flush();
 
         return $this->render('sorties/details.html.twig', [
             'sortie' => $sortie,
         ]);
     }
 
-    // ------------------------- AJOUTER UNE SORTIE -------------------------
-    #[Route('/ajouter', name: 'ajouter', methods: ['GET','POST'])]
+    // ------------------------- AJOUTER -------------------------
+    #[Route('/ajouter', name: 'ajouter', methods: ['GET', 'POST'])]
     public function ajouter(Request $request, EntityManagerInterface $em, FileUploaderSortie $fileUploader): Response
     {
         $sortie = new Sortie();
@@ -197,12 +121,7 @@ final class SortiesController extends AbstractController
             }
 
             $sortie->setOrganisateur($this->getUser());
-
             $etatCreer = $em->getRepository(Etat::class)->findOneBy(['noEtat' => 1]);
-            if (!$etatCreer) {
-                $this->addFlash('error', 'État "Créée" introuvable.');
-                return $this->redirectToRoute('sorties_liste');
-            }
             $sortie->setEtat($etatCreer);
 
             $em->persist($sortie);
@@ -218,7 +137,7 @@ final class SortiesController extends AbstractController
     }
 
     // ------------------------- MODIFIER -------------------------
-    #[Route('/{id}/modifier', name: 'modifier', requirements: ['id' => '\d+'], methods: ['GET','POST'])]
+    #[Route('/{id}/modifier', name: 'modifier', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function modifier(int $id, Request $request, EntityManagerInterface $em, FileUploaderSortie $fileUploader): Response
     {
         $sortie = $em->getRepository(Sortie::class)->find($id);
@@ -234,6 +153,7 @@ final class SortiesController extends AbstractController
                 $sortie->setUrlPhoto($fileUploader->upload($imageFile));
             }
             $em->flush();
+
             $this->addFlash('success', 'Sortie modifiée avec succès ✅');
             return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
         }
@@ -249,17 +169,15 @@ final class SortiesController extends AbstractController
     public function supprimer(int $id, EntityManagerInterface $em): Response
     {
         $sortie = $em->getRepository(Sortie::class)->find($id);
-
         if (!$sortie) {
             throw $this->createNotFoundException('Sortie non trouvée.');
         }
 
         $em->remove($sortie);
         $em->flush();
-        $this->addFlash('success', 'Sortie modifiée avec succès ✅');
 
+        $this->addFlash('success', 'Sortie supprimée avec succès 🗑️');
         return $this->redirectToRoute('sorties_liste');
-
     }
 
     // ------------------------- INSCRIPTION / DÉSINSCRIPTION -------------------------
@@ -267,6 +185,7 @@ final class SortiesController extends AbstractController
     public function inscription(Sortie $sortie, EntityManagerInterface $em, Security $security): Response
     {
         $participant = $security->getUser();
+
         if (!$participant) {
             $this->addFlash('error', 'Vous devez être connecté pour vous inscrire.');
             return $this->redirectToRoute('app_login');
@@ -289,6 +208,7 @@ final class SortiesController extends AbstractController
     public function desinscription(Sortie $sortie, EntityManagerInterface $em, Security $security): Response
     {
         $participant = $security->getUser();
+
         if (!$participant) {
             $this->addFlash('error', 'Vous devez être connecté pour vous désinscrire.');
             return $this->redirectToRoute('app_login');
@@ -299,7 +219,7 @@ final class SortiesController extends AbstractController
         } else {
             $sortie->removeParticipant($participant);
             $em->flush();
-            $this->addFlash('success', 'Vous avez été désinscrit avec succès ✅');
+            $this->addFlash('success', 'Désinscription réussie ✅');
         }
 
         return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
@@ -310,21 +230,16 @@ final class SortiesController extends AbstractController
     public function publier(Sortie $sortie, EntityManagerInterface $em, Security $security): Response
     {
         $user = $security->getUser();
-        if (!$user || $sortie->getOrganisateur() !== $user) {
+        if ($sortie->getOrganisateur() !== $user) {
             $this->addFlash('error', 'Seul l’organisateur peut publier cette sortie.');
             return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
         }
 
         $etat = $em->getRepository(Etat::class)->findOneBy(['noEtat' => 2]);
-        if (!$etat) {
-            $this->addFlash('error', 'État "Ouverte" introuvable.');
-            return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
-        }
-
         $sortie->setEtat($etat);
         $em->flush();
-        $this->addFlash('success', 'La sortie a été publiée avec succès ✅');
 
+        $this->addFlash('success', 'La sortie a été publiée avec succès ✅');
         return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
     }
 
@@ -332,21 +247,16 @@ final class SortiesController extends AbstractController
     public function cloturer(Sortie $sortie, EntityManagerInterface $em, Security $security): Response
     {
         $user = $security->getUser();
-        if (!$user || $sortie->getOrganisateur() !== $user) {
+        if ($sortie->getOrganisateur() !== $user) {
             $this->addFlash('error', 'Seul l’organisateur peut clôturer cette sortie.');
             return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
         }
 
         $etat = $em->getRepository(Etat::class)->findOneBy(['noEtat' => 3]);
-        if (!$etat) {
-            $this->addFlash('error', 'État "Clôturée" introuvable.');
-            return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
-        }
-
         $sortie->setEtat($etat);
         $em->flush();
-        $this->addFlash('success', 'La sortie a été clôturée avec succès ✅');
 
+        $this->addFlash('success', 'Sortie clôturée avec succès ✅');
         return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
     }
 
@@ -354,22 +264,42 @@ final class SortiesController extends AbstractController
     public function annuler(Sortie $sortie, EntityManagerInterface $em, Security $security): Response
     {
         $user = $security->getUser();
-        if (!$user || ($sortie->getOrganisateur() !== $user && !$
-                $user->isAdministrateur())) {
-            $this->addFlash('error', 'Seul l’organisateur ou l’administrateur peut annuler cette sortie.');
-            return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
+
+        // Vérifie si l’utilisateur est admin
+        if (!method_exists($user, 'isAdministrateur')) {
+            $isAdmin = in_array('ROLE_ADMIN', $user->getRoles());
+        } else {
+            $isAdmin = $user->isAdministrateur();
         }
-        $etat = $em->getRepository(Etat::class)->findOneBy(['noEtat' => 6]);
-        if (!$etat) {
-            $this->addFlash('error', 'État "Annulée" introuvable.');
+
+        if ($sortie->getOrganisateur() !== $user && !$isAdmin) {
+            $this->addFlash('error', 'Seul l’organisateur ou un administrateur peut annuler cette sortie.');
             return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
         }
 
+        $etat = $em->getRepository(Etat::class)->findOneBy(['noEtat' => 6]);
         $sortie->setEtat($etat);
         $em->flush();
-        $this->addFlash('success', 'La sortie a été annulée avec succès ✅');
 
+        $this->addFlash('success', 'Sortie annulée avec succès ✅');
         return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
     }
-}
 
+    // ------------------------- MISE À JOUR DES ÉTATS -------------------------
+    private function updateEtatSortie(Sortie $sortie, EntityManagerInterface $em, \DateTime $dateJour): void
+    {
+        $dateDebut = clone $sortie->getDateDebut();
+        $dateCloture = clone $sortie->getDateCloture();
+        $dateFin = (clone $dateDebut)->add(new DateInterval('PT' . $sortie->getDuree() . 'M'));
+
+        $etatRepo = $em->getRepository(Etat::class);
+
+        if ($dateJour >= $dateFin) {
+            $sortie->setEtat($etatRepo->findOneBy(['noEtat' => 5])); // Passée
+        } elseif ($dateJour >= $dateDebut) {
+            $sortie->setEtat($etatRepo->findOneBy(['noEtat' => 4])); // En cours
+        } elseif ($dateJour >= $dateCloture) {
+            $sortie->setEtat($etatRepo->findOneBy(['noEtat' => 3])); // Clôturée
+        }
+    }
+}

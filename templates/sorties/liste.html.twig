@@ -113,7 +113,7 @@
                                     <div class="rounded-3 px-2 py-1 small text-muted d-flex align-items-center"
                                          style="background-color: #f0efeb; border: 1px solid #ddd;">
                                         <i class="bi bi-people me-1 text-secondary"></i>
-                                        <span>Etat : {{ sortie.etat.Libelle }}</span>
+                                        <span>État : {{ sortie.etat is not null ? sortie.etat.Libelle : 'Non défini' }}</span>
                                     </div>
                                     {% if app.user in sortie.participants %}
                                         <div class="rounded-3 px-2 py-1 small text-muted d-flex align-items-center"
