@@ -28,17 +28,19 @@
 </head>
 <body class="d-flex flex-column min-vh-100">
 <header>
-    <nav class="navbar navbar-expand-lg">
+    <nav class="navbar navbar-expand-lg shadow-sm mb-4" style="background-color: transparent;">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="/">
                 <img src="{{ asset('img/logo.jpg') }}" alt="Logo Sortir.com" style="height: 40px;">
             </a>
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
+                <!-- Navigation principale à gauche -->
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="/">Accueil</a>
@@ -47,66 +49,59 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ path('sorties_liste') }}">Les sorties</a>
                         </li>
-
                         {% if app.user.administrateur %}
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ path('villes_liste') }}">Villes</a>
                             </li>
-
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ path('lieux_liste') }}">Lieux</a>
                             </li>
-
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ path('sites_liste') }}">Sites</a>
                             </li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
 
+                <!-- Section utilisateur à droite -->
+                <ul class="navbar-nav ms-auto align-items-center d-flex gap-2">
+                    {% if app.user %}
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center" href="{{ path('profil_view', {id: app.user.id}) }}">
+                                {% if app.user.photoProfil %}
+                                    <img src="{{ asset(app_images_profil_directory ~ '/' ~ app.user.photoProfil) }}"
+                                         alt="Profil" class="rounded-circle me-2" style="height: 35px; width:35px; object-fit:cover;">
+                                {% endif %}
+                                <strong>{{ app.user.prenom|capitalize }}</strong>
+                            </a>
+                        </li>
+
+                        {% if app.user.administrateur %}
+                            <li class="nav-item">
+                                <a class="btn btn-primary btn-m" href="{{ path('admin') }}">Administration</a>
+                            </li>
                         {% endif %}
 
-
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ path('profil_view',{id:app.user.id}) }}">Mon profil</a>
-                        </li>
-                        <li class="nav-item d-flex align-items-center ms-2">
-                            <form action="{{ path('app_logout') }}" method="post" class="d-inline m-0 p-0">
-                                <button type="submit" class="btn btn-danger btn-sm">
-                                    Se déconnecter
-                                </button>
+                            <form action="{{ path('app_logout') }}" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-outline-danger btn-m">Se déconnecter</button>
                             </form>
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ path('app_login') }}">Connexion</a>
+                            <a class="btn btn-primary btn-m" href="{{ path('app_login') }}">Connexion</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ path('app_register') }}">Créer un compte</a>
+                            <a class="btn btn-outline-primary btn-m" href="{{ path('app_register') }}">Créer un compte</a>
                         </li>
                     {% endif %}
-                    {% if app.user and app.user.administrateur %}
-                        <li class="nav-item d-flex align-items-center ms-2">
-                            <a class="btn btn-primary btn-sm" href="{{ path('admin') }}">Accéder au panneau admin</a>
-                        </li>
-                    {% endif %}
-
                 </ul>
-                {% if app.user %}
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('profil_view',{id:app.user.id}) }}">
-                                {% if app.user.photoProfil %}
-                                    <img src="{{ asset(app_images_profil_directory ~ '/' ~ app.user.photoProfil) }}"
-                                         alt="Image du profil" style="height: 40px;">
-                                {% endif %}
-                                <strong>{{ app.user.pseudo }}</strong>
-                            </a>
-                        </li>
-                    </ul>
-                {% endif %}
 
             </div>
         </div>
     </nav>
 </header>
+
 
 <main class="flex-grow-1">
     <div class="container">
