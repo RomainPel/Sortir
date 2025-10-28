@@ -7,7 +7,7 @@
 
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="fw-bold text-black mb-0">Sorties à venir</h1>
-            <a href="{{ path('sorties_ajouter') }}" class="btn btn-outline-success px-3">➕ Ajouter une sortie
+            <a href="{{ path('sorties_ajouter') }}" class="btn btn-success px-3">➕ Ajouter une sortie
             </a>
         </div>
         <form method="get" action="{{ path('sorties_liste') }}" class="mb-4">
@@ -18,7 +18,7 @@
                     <input type="text" name="q" value="{{ app.request.get('q') }}" class="form-control" placeholder="🔎 Nom de la sortie...">
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label class="form-label">Site</label>
                     <select name="site" class="form-select">
                         <option value="">Tous les sites</option>
@@ -39,10 +39,13 @@
                     <input type="date" name="dateFin" value="{{ app.request.get('dateFin') }}" class="form-control">
                 </div>
 
-                <div class="col-md-2 text-end">
+                <div class="col-md-2">
                     <button type="submit" class="btn btn-primary w-100">Filtrer</button>
                 </div>
-            </div>
+                <div class="col-md-1">
+                    <button type="reset" class="btn btn-secondary" onclick="window.location='{{ path('sorties_liste') }}'"> Réinitialiser </button>
+
+                </div>
 
             <div class="row mt-3 g-2">
                 <div class="col-md-2 form-check">
@@ -64,6 +67,7 @@
                     <input type="checkbox" name="terminee" id="terminee" class="form-check-input" {{ app.request.get('terminee') ? 'checked' }}>
                     <label for="terminee" class="form-check-label">Sorties terminées</label>
                 </div>
+            </div>
             </div>
         </form>
 
