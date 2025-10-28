@@ -6,6 +6,7 @@ use App\Repository\SortiesRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SortiesRepository::class)]
 class Sortie
@@ -15,18 +16,24 @@ class Sortie
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\NotBlank(message: 'Veuillez renseigner ce champ')]
     #[ORM\Column(length: 30)]
     private ?string $nom = null;
 
+    #[Assert\GreaterThan("today", message: "La date de la sortie doit être postérieure à aujourd'hui.")]
     #[ORM\Column]
     private ?\DateTime $dateDebut = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $duree = null;
+    #[Assert\PositiveOrZero]
+    #[ORM\Column]
+    private ?int $duree = 0;
 
+    #[Assert\GreaterThan("today", message: "La date de clôture des inscriptions doit être postérieure à aujourd'hui.")]
+    #[Assert\Expression("this.dateCloture < this.dateDebut", message: "La date de clôture des inscriptions doit être antérieur à la date de sortie.")]
     #[ORM\Column]
     private ?\DateTime $dateCloture = null;
 
+    #[Assert\Positive]
     #[ORM\Column]
     private ?int $nbInscriptionMax = null;
 
@@ -41,9 +48,11 @@ class Sortie
     private ?Lieu $lieu = null;
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\JoinColumn(nullable: true, onDelete: "SET NULL")]
     private ?Etat $etat = null;
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private ?Participant $organisateur = null;
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]

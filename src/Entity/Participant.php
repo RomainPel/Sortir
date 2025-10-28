@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ParticipantsRepository::class)]
 #[UniqueEntity(fields: ['pseudo'], message: 'There is already an account with this pseudo')]
@@ -18,21 +19,27 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
+    #[Assert\NotBlank(message: 'Veuillez renseigner ce champ')]
     #[ORM\Column(length: 30)]
     private ?string $pseudo = null;
 
+    #[Assert\NotBlank(message: 'Veuillez renseigner ce champ')]
     #[ORM\Column(length: 30)]
     private ?string $nom = null;
 
+    #[Assert\NotBlank(message: 'Veuillez renseigner ce champ')]
     #[ORM\Column(length: 30)]
     private ?string $prenom = null;
 
-    #[ORM\Column(length: 15)]
+    #[ORM\Column(length: 15, nullable: true)]
     private ?string $telephone = null;
 
+    #[Assert\Email(message: 'Veuillez renseigner un email valide')]
     #[ORM\Column(length: 50)]
     private ?string $mail = null;
 
+    #[Assert\Regex(pattern : '^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$', message: 'Le mot de passe doit contenir au moins 8 caractères avec une Majuscule, un chiffre et un caractère spécial')]
     #[ORM\Column(length: 255)]
     private ?string $motDePasse = null;
 

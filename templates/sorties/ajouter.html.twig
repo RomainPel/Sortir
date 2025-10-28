@@ -100,7 +100,7 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        function initLieuSelect() {
             const lieuSelect = document.querySelector('#sortie_lieu');
             if (!lieuSelect) {
                 console.error("Champ lieu introuvable !");
@@ -136,6 +136,8 @@
                     Object.values(fields).forEach(el => el.textContent = 'Erreur');
                 }
             });
-        });
+        }
+
+        document.addEventListener('turbo:load', initLieuSelect);
     </script>
 {% endblock %}

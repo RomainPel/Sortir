@@ -45,7 +45,7 @@ class SortieFixtures extends Fixture
     }
 
     private function addParticipants(Sortie $sortie) :void{
-        for($i=0;$i<=mt_rand(0,5);$i++){
+        for($i=0;$i<=mt_rand(0,$sortie->getNbInscriptionMax());$i++){
             $participant=$this->getReference('participant'.rand(1,10),Participant::class);
             $sortie->addParticipant($participant);
         }
