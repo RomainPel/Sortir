@@ -22,6 +22,34 @@ class LoginControllerTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
     }
+
+    public function testFormValide(): void
+    {
+        $client = static::createClient();
+
+        $client->request('GET', '/login');
+
+        $client->submitForm("Connexion", [
+            '_username' => 'test',
+            '_password' => '!Test01!',
+        ]);
+
+        $this->assertResponseIsSuccessful();
+    }
+
+    public function testFormInvalideSiPasDePseudo(): void
+    {
+        $client = static::createClient();
+
+        $client->request('GET', '/login');
+
+        $client->submitForm("Connexion", [
+            '_username' => '',
+            '_password' => '!Test01!',
+        ]);
+
+        $this->assertEquals(422, $client->getResponse()->getStatusCode());
+    }
 }
 
 

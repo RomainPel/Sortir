@@ -79,7 +79,7 @@ class SortieControllerTest extends WebTestCase
             'sorties_form[urlPhoto]' => 'test.png',
         ]);
 
-        $this->assertEquals(500, $client->getResponse()->getStatusCode());
+        $this->assertEquals(422, $client->getResponse()->getStatusCode());
     }
 
     public function testFormInvalideSiNomTropLong(): void
@@ -102,7 +102,7 @@ class SortieControllerTest extends WebTestCase
             'sorties_form[urlPhoto]' => 'test.png',
         ]);
 
-        $this->assertEquals(500, $client->getResponse()->getStatusCode());
+        $this->assertEquals(422, $client->getResponse()->getStatusCode());
     }
 
     public function testFormInvalideSiDureeNegative(): void
@@ -123,7 +123,7 @@ class SortieControllerTest extends WebTestCase
             'sorties_form[urlPhoto]' => 'test.png',
         ]);
 
-        $this->assertEquals(500, $client->getResponse()->getStatusCode());
+        $this->assertEquals(422, $client->getResponse()->getStatusCode());
     }
 
     public function testFormInvalideSiNbinscriptionmaxNegatif(): void
@@ -144,7 +144,7 @@ class SortieControllerTest extends WebTestCase
             'sorties_form[urlPhoto]' => 'test.png',
         ]);
 
-        $this->assertEquals(500, $client->getResponse()->getStatusCode());
+        $this->assertEquals(422, $client->getResponse()->getStatusCode());
     }
 
     private function getUser(): Participant
