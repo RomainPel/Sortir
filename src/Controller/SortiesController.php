@@ -99,8 +99,12 @@ final class SortiesController extends AbstractController
             throw $this->createNotFoundException('Sortie non trouvée.');
         }
 
-        $this->updateEtatSortie($sortie, $em, new \DateTime('now', new \DateTimeZone('Europe/Paris')));
-        $em->flush();
+        // Ne pas mettre à jour l'état des sorties "Créées" (non publiées)
+        $etatActuel = $sortie->getEtat();
+        if (!$etatActuel || $etatActuel->getNoEtat() !== 1) {
+            $this->updateEtatSortie($sortie, $em, new \DateTime('now', new \DateTimeZone('Europe/Paris')));
+            $em->flush();
+        }
 
         return $this->render('sorties/details.html.twig', [
             'sortie' => $sortie,
@@ -265,7 +269,7 @@ final class SortiesController extends AbstractController
     {
         $user = $security->getUser();
 
-        // Vérifie si l’utilisateur est admin
+        // Vérifi si l’utilisateur est admin
         if (!method_exists($user, 'isAdministrateur')) {
             $isAdmin = in_array('ROLE_ADMIN', $user->getRoles());
         } else {
@@ -288,6 +292,12 @@ final class SortiesController extends AbstractController
     // ------------------------- MISE À JOUR DES ÉTATS -------------------------
     private function updateEtatSortie(Sortie $sortie, EntityManagerInterface $em, \DateTime $dateJour): void
     {
+        $etatActuel = $sortie->getEtat();
+
+        if ($etatActuel && in_array($etatActuel->getNoEtat(), [1, 6])) {
+            return;
+        }
+
         $dateDebut = clone $sortie->getDateDebut();
         $dateCloture = clone $sortie->getDateCloture();
         $dateFin = (clone $dateDebut)->add(new DateInterval('PT' . $sortie->getDuree() . 'M'));
