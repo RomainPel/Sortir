@@ -16,25 +16,12 @@
                             <span class="badge bg-light text-dark fs-6 px-3 py-2">
                        Inscriptions clôturées
                             </span>
-
-
                         {% endif %}
-
-
-
                         <h1 class="text-dark mb-2">{{ sortie.nom }}</h1>
                     </div>
                     <span class="badge bg-light text-dark fs-6 px-3 py-2">
                         {{ sortie.participants|length }}/{{ sortie.nbinscriptionmax }} inscrits
-
                     </span>
-
-
-
-
-
-
-
                 </div>
 
                 <!-- Card principale avec les détails -->
@@ -201,6 +188,7 @@
 
 
                     {% if sortie.organisateur == app.user %}
+                    {% if sortie.etat and sortie.etat.noEtat == 1 %}
                         <a href="{{ path('sorties_modifier', {'id': sortie.id}) }}" class="btn btn-outline-info">
                             Modifier la sortie
                         </a>
@@ -208,6 +196,7 @@
                         <a href="{{ path('sorties_supprimer', {'id': sortie.id}) }}" class="btn btn-outline-danger">
                             Supprimer la sortie
                         </a>
+                    {% endif %}
 
                         <!-- Vérifie si la sortie est avant l'état "publiée" -->
                         {% if sortie.etat and sortie.etat.noEtat < 2 %}

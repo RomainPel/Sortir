@@ -17,32 +17,54 @@ class Sortie
     private ?int $id = null;
 
     #[Assert\NotBlank(message: 'Veuillez renseigner ce champ')]
+    #[Assert\Length(
+        max: 30,
+        maxMessage: 'Le nom ne peut pas dépasser {{ limit }} caractères'
+    )]
     #[ORM\Column(length: 30)]
     private ?string $nom = null;
 
-    #[Assert\GreaterThan("today", message: "La date de la sortie doit être postérieure à aujourd'hui.")]
+    #[Assert\NotBlank(message: 'Veuillez renseigner la date de début')]
+    #[Assert\GreaterThan(
+        value: 'now',
+        message: "La date de la sortie doit être postérieure à aujourd'hui"
+    )]
     #[ORM\Column]
     private ?\DateTime $dateDebut = null;
 
-    #[Assert\PositiveOrZero]
+    #[Assert\NotNull(message: 'Veuillez renseigner la durée')]
+    #[Assert\PositiveOrZero(message: 'La durée doit être positive ou nulle')]
     #[ORM\Column]
     private ?int $duree = 0;
 
-    #[Assert\GreaterThan("today", message: "La date de clôture des inscriptions doit être postérieure à aujourd'hui.")]
-    #[Assert\Expression("this.dateCloture < this.dateDebut", message: "La date de clôture des inscriptions doit être antérieur à la date de sortie.")]
+    #[Assert\NotBlank(message: 'Veuillez renseigner la date de clôture')]
+    #[Assert\GreaterThan(
+        value: 'now',
+        message: "La date de clôture des inscriptions doit être postérieure à aujourd'hui"
+    )]
+    #[Assert\LessThan(
+        propertyPath: "dateDebut",
+        message: "La date de clôture doit être avant la date de début"
+    )]
     #[ORM\Column]
     private ?\DateTime $dateCloture = null;
 
-    #[Assert\Positive]
+    #[Assert\NotBlank(message: 'Veuillez renseigner le nombre maximum d\'inscriptions')]
+    #[Assert\Positive(message: 'Le nombre d\'inscriptions doit être positif')]
     #[ORM\Column]
     private ?int $nbInscriptionMax = null;
 
+    #[Assert\Length(
+        max: 500,
+        maxMessage: 'La description ne peut pas dépasser {{ limit }} caractères'
+    )]
     #[ORM\Column(length: 500, nullable: true)]
     private ?string $descriptionInfos = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $urlPhoto = null;
 
+    #[Assert\NotNull(message: 'Veuillez sélectionner un lieu')]
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: true, onDelete: "SET NULL")]
     private ?Lieu $lieu = null;
@@ -116,10 +138,6 @@ class Sortie
         return $this->dateCloture;
     }
 
-    /**
-     * @param \DateTime $dateCloture
-     * @return $this
-     */
     public function setDateCloture(\DateTime $dateCloture): static
     {
         $this->dateCloture = $dateCloture;

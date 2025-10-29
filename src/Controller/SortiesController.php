@@ -132,7 +132,7 @@ final class SortiesController extends AbstractController
         }
 
         return $this->render('sorties/ajouter.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form, // Pas de createView() ici
         ]);
     }
 
@@ -159,7 +159,7 @@ final class SortiesController extends AbstractController
         }
 
         return $this->render('sorties/modifier.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,  // ← Enlevez createView()
             'sortie' => $sortie,
         ]);
     }

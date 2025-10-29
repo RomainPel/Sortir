@@ -2,60 +2,164 @@
 
 {% block title %}Ajouter une Sortie{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .invalid-feedback {
+            display: block;
+            color: #dc3545;
+            font-size: 0.875em;
+            margin-top: 0.25rem;
+        }
+        .is-invalid {
+            border-color: #dc3545;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
     <div class="container mt-4">
         <h1 class="mb-4">Ajouter une Sortie</h1>
 
         {{ form_start(form) }}
+
+        {# Récupération des erreurs globales + erreurs des dates #}
+        {% set global_errors = form.vars.errors %}
+        {% set date_errors = form.datedebut.vars.errors|merge(form.datecloture.vars.errors) %}
+
+        {% if global_errors|length > 0 or date_errors|length > 0 %}
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    {% for error in global_errors %}
+                        <li>{{ error.message }}</li>
+                    {% endfor %}
+                    {% for error in date_errors %}
+                        <li>{{ error.message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
         <div class="row">
             <div class="col-md-6">
                 <div class="mb-3">
-                    {{ form_label(form.nom) }}
-                    {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.nom) }}
+                    {{ form_label(form.nom, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.nom, {
+                        'attr': {
+                            'class': 'form-control' ~ (form.nom.vars.errors|length > 0 ? ' is-invalid' : '')
+                        }
+                    }) }}
+                    {% if form.nom.vars.errors|length > 0 %}
+                        <div class="invalid-feedback">
+                            {% for error in form.nom.vars.errors %}
+                                {{ error.message }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                {# Date de début — erreurs affichées en haut #}
+                <div class="mb-3">
+                    {{ form_label(form.datedebut, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.datedebut, {
+                        'attr': {
+                            'class': 'form-control' ~ (form.datedebut.vars.errors|length > 0 ? ' is-invalid' : '')
+                        }
+                    }) }}
+                </div>
+
+                {# Date de clôture — erreurs affichées en haut #}
+                <div class="mb-3">
+                    {{ form_label(form.datecloture, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.datecloture, {
+                        'attr': {
+                            'class': 'form-control' ~ (form.datecloture.vars.errors|length > 0 ? ' is-invalid' : '')
+                        }
+                    }) }}
                 </div>
 
                 <div class="mb-3">
-                    {{ form_label(form.datedebut) }}
-                    {{ form_widget(form.datedebut, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.datedebut) }}
+                    {{ form_label(form.nbinscriptionmax, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.nbinscriptionmax, {
+                        'attr': {
+                            'class': 'form-control' ~ (form.nbinscriptionmax.vars.errors|length > 0 ? ' is-invalid' : '')
+                        }
+                    }) }}
+                    {% if form.nbinscriptionmax.vars.errors|length > 0 %}
+                        <div class="invalid-feedback">
+                            {% for error in form.nbinscriptionmax.vars.errors %}
+                                {{ error.message }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
 
                 <div class="mb-3">
-                    {{ form_label(form.datecloture) }}
-                    {{ form_widget(form.datecloture, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.datecloture) }}
+                    {{ form_label(form.duree, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.duree, {
+                        'attr': {
+                            'class': 'form-control' ~ (form.duree.vars.errors|length > 0 ? ' is-invalid' : '')
+                        }
+                    }) }}
+                    {% if form.duree.vars.errors|length > 0 %}
+                        <div class="invalid-feedback">
+                            {% for error in form.duree.vars.errors %}
+                                {{ error.message }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
 
                 <div class="mb-3">
-                    {{ form_label(form.nbinscriptionmax) }}
-                    {{ form_widget(form.nbinscriptionmax, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.nbinscriptionmax) }}
+                    {{ form_label(form.descriptioninfos, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.descriptioninfos, {
+                        'attr': {
+                            'class': 'form-control' ~ (form.descriptioninfos.vars.errors|length > 0 ? ' is-invalid' : ''),
+                            'rows': 3
+                        }
+                    }) }}
+                    {% if form.descriptioninfos.vars.errors|length > 0 %}
+                        <div class="invalid-feedback">
+                            {% for error in form.descriptioninfos.vars.errors %}
+                                {{ error.message }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
 
                 <div class="mb-3">
-                    {{ form_label(form.duree) }}
-                    {{ form_widget(form.duree, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.duree) }}
-                </div>
-
-                <div class="mb-3">
-                    {{ form_label(form.descriptioninfos) }}
-                    {{ form_widget(form.descriptioninfos, {'attr': {'class': 'form-control', 'rows': 3}}) }}
-                    {{ form_errors(form.descriptioninfos) }}
-                </div>
-
-                <div class="mb-3">
-                    {{ form_label(form.urlPhoto) }}
-                    {{ form_widget(form.urlPhoto, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.urlPhoto) }}
+                    {{ form_label(form.urlPhoto, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.urlPhoto, {
+                        'attr': {
+                            'class': 'form-control' ~ (form.urlPhoto.vars.errors|length > 0 ? ' is-invalid' : '')
+                        }
+                    }) }}
+                    {% if form.urlPhoto.vars.errors|length > 0 %}
+                        <div class="invalid-feedback">
+                            {% for error in form.urlPhoto.vars.errors %}
+                                {{ error.message }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
             </div>
+
             <div class="col-md-6">
                 <div class="mb-3">
-                    {{ form_label(form.lieu) }}
-                    {{ form_widget(form.lieu, {'id': 'sortie_lieu', 'attr': {'class': 'form-select'}}) }}
-                    {{ form_errors(form.lieu) }}
+                    {{ form_label(form.lieu, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.lieu, {
+                        'id': 'sortie_lieu',
+                        'attr': {
+                            'class': 'form-select' ~ (form.lieu.vars.errors|length > 0 ? ' is-invalid' : '')
+                        }
+                    }) }}
+                    {% if form.lieu.vars.errors|length > 0 %}
+                        <div class="invalid-feedback">
+                            {% for error in form.lieu.vars.errors %}
+                                {{ error.message }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
 
                 <fieldset class="border border-dark-subtle rounded-3 p-3">
@@ -89,7 +193,7 @@
         </div>
 
         <div class="text-center">
-            <button class="btn btn-primary mt-2">Enregistrer</button>
+            <button type="submit" class="btn btn-primary mt-2">Enregistrer</button>
             <a href="{{ path('sorties_liste') }}" class="btn btn-secondary mt-2">Retour à la liste</a>
         </div>
 
@@ -114,7 +218,7 @@
                 longitude: document.querySelector('#lieu-longitude')
             };
 
-            lieuSelect.addEventListener('change', async () => {
+            async function updateLieuInfo() {
                 const lieuId = lieuSelect.value;
                 if (!lieuId) {
                     Object.values(fields).forEach(el => el.textContent = 'Non précisé');
@@ -135,9 +239,16 @@
                     console.error(error);
                     Object.values(fields).forEach(el => el.textContent = 'Erreur');
                 }
-            });
+            }
+
+            if (lieuSelect.value) {
+                updateLieuInfo();
+            }
+
+            lieuSelect.addEventListener('change', updateLieuInfo);
         }
 
         document.addEventListener('turbo:load', initLieuSelect);
+        document.addEventListener('DOMContentLoaded', initLieuSelect);
     </script>
 {% endblock %}
