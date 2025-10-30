@@ -162,28 +162,30 @@
                     {% set dejaInscrit = app.user in sortie.participants %}
                     {% set placesDisponibles = sortie.participants|length < sortie.nbinscriptionmax %}
 
-                    {% if dejaInscrit %}
-                        <a href="{{ path('sorties_desinscription', { id: sortie.id }) }}"
-                           class="btn btn-danger btn-lg">
-                            Se désinscrire
-                        </a>
-                    {% else %}
-                        <!-- Vérifie si la sortie est avant l'état "clôturée" -->
-                        {% if sortie.etat and sortie.etat.noEtat < 3 %}
-                            {% if placesDisponibles %}
-                                <a href="{{ path('sorties_inscription', { id: sortie.id }) }}"
-                                   class="btn btn-success btn-lg">
-                                    S'inscrire
-                                </a>
-                            {% else %}
-                                <button class="btn btn-secondary btn-lg" disabled>
-                                    Complet
-                                </button>
-                            {% endif %}
+                    {% if app.user != sortie.organisateur %}
+                        {% if dejaInscrit %}
+                            <a href="{{ path('sorties_desinscription', { id: sortie.id }) }}"
+                               class="btn btn-danger btn-lg">
+                                Se désinscrire
+                            </a>
                         {% else %}
+                            <!-- Vérifie si la sortie est "ouverte" -->
+                            {% if sortie.etat and sortie.etat.noEtat == 2 %}
+                                {% if placesDisponibles %}
+                                    <a href="{{ path('sorties_inscription', { id: sortie.id }) }}"
+                                       class="btn btn-success btn-lg">
+                                        S'inscrire
+                                    </a>
+                                {% else %}
+                                    <button class="btn btn-secondary btn-lg" disabled>
+                                        Complet
+                                    </button>
+                                {% endif %}
+                            {% else %}
+
+                            {% endif %}
 
                         {% endif %}
-
                     {% endif %}
 
 
