@@ -6,26 +6,19 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{% block title %}Sortir.com{% endblock %}</title>
     <link rel="icon" href="{{ asset('img/favicon.jpg') }}">
+
     {% block stylesheets %}
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        <!-- ✅ Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+              rel="stylesheet"
               integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
               crossorigin="anonymous">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-                integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-                crossorigin="anonymous"></script>
+
+        <!-- ✅ Feuille de style personnalisée -->
         <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     {% endblock %}
-
-    {% block javascripts %}
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-                integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-                crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"
-                integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y"
-                crossorigin="anonymous"></script>
-        {% block importmap %}{{ importmap('app') }}{% endblock %}
-    {% endblock %}
 </head>
+
 <body class="d-flex flex-column min-vh-100">
 <header>
     <nav class="navbar navbar-expand-lg shadow-sm mb-4" style="background-color: transparent;">
@@ -50,15 +43,9 @@
                             <a class="nav-link" href="{{ path('sorties_liste') }}">Les sorties</a>
                         </li>
                         {% if app.user.administrateur %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ path('villes_liste') }}">Villes</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ path('lieux_liste') }}">Lieux</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ path('sites_liste') }}">Sites</a>
-                            </li>
+                            <li class="nav-item"><a class="nav-link" href="{{ path('villes_liste') }}">Villes</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ path('lieux_liste') }}">Lieux</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ path('sites_liste') }}">Sites</a></li>
                         {% endif %}
                     {% endif %}
                 </ul>
@@ -70,7 +57,9 @@
                             <a class="nav-link d-flex align-items-center" href="{{ path('profil_view', {id: app.user.id}) }}">
                                 {% if app.user.photoProfil %}
                                     <img src="{{ asset(app_images_profil_directory ~ '/' ~ app.user.photoProfil) }}"
-                                         alt="Profil" class="rounded-circle me-2" style="height: 35px; width:35px; object-fit:cover;">
+                                         alt="Profil"
+                                         class="rounded-circle me-2"
+                                         style="height: 35px; width: 35px; object-fit: cover;">
                                 {% endif %}
                                 <strong>{{ app.user.prenom|capitalize }}</strong>
                             </a>
@@ -96,20 +85,31 @@
                         </li>
                     {% endif %}
                 </ul>
-
             </div>
         </div>
     </nav>
 </header>
-
 
 <main class="flex-grow-1">
     <div class="container">
         {% block body %}{% endblock %}
     </div>
 </main>
-<footer>
-    <div class="container">&copy; {{ "now" | date("Y") }} - Sortir.com - ENI Ecole Informatique</div>
+
+<footer class="mt-auto py-3 border-top text-center">
+    <div class="container">
+        &copy; {{ "now" | date("Y") }} - Sortir.com - ENI École Informatique
+    </div>
 </footer>
+
+{% block javascripts %}
+    <!-- ✅ Bootstrap Bundle (inclut Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+            crossorigin="anonymous"></script>
+
+    <!-- ✅ Importmap Symfony -->
+    {% block importmap %}{{ importmap('app') }}{% endblock %}
+{% endblock %}
 </body>
 </html>
