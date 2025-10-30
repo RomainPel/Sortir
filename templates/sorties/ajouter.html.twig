@@ -21,7 +21,7 @@
     <div class="container mt-4">
         <h1 class="mb-4">Ajouter une Sortie</h1>
 
-        {{ form_start(form) }}
+        {{ form_start(form, {'attr': {'data-turbo': 'false'}}) }}
 
         {# Récupération des erreurs globales + erreurs des dates #}
         {% set global_errors = form.vars.errors %}
@@ -165,31 +165,35 @@
 
                 <fieldset class="border border-dark-subtle rounded-3 p-3">
                     <legend>Informations sur le lieu</legend>
+
+                    {% set lieuActuel = infosLieu ?? {} %}
+
                     <div class="mb-3">
                         <p class="detail-label"><strong>Rue</strong></p>
-                        <p class="detail-value" id="lieu-rue">Non précisé</p>
+                        <p class="detail-value" id="lieu-rue">{{ lieuActuel.rue ?? 'Non précisé' }}</p>
                     </div>
 
                     <div class="mb-3">
                         <p class="detail-label"><strong>Ville</strong></p>
-                        <p class="detail-value" id="lieu-ville">Non précisé</p>
+                        <p class="detail-value" id="lieu-ville">{{ lieuActuel.ville ?? 'Non précisé' }}</p>
                     </div>
 
                     <div class="mb-3">
                         <p class="detail-label"><strong>Code Postal</strong></p>
-                        <p class="detail-value" id="lieu-cp">Non précisé</p>
+                        <p class="detail-value" id="lieu-cp">{{ lieuActuel.cp ?? 'Non précisé' }}</p>
                     </div>
 
                     <div class="mb-3">
                         <p class="detail-label"><strong>Latitude</strong></p>
-                        <p class="detail-value" id="lieu-latitude">Non précisé</p>
+                        <p class="detail-value" id="lieu-latitude">{{ lieuActuel.latitude ?? 'Non précisé' }}</p>
                     </div>
 
                     <div class="mb-3">
                         <p class="detail-label"><strong>Longitude</strong></p>
-                        <p class="detail-value" id="lieu-longitude">Non précisé</p>
+                        <p class="detail-value" id="lieu-longitude">{{ lieuActuel.longitude ?? 'Non précisé' }}</p>
                     </div>
                 </fieldset>
+
             </div>
         </div>
 
@@ -205,12 +209,10 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        function initLieuSelect() {
+        document.addEventListener('DOMContentLoaded', function() {
             const lieuSelect = document.querySelector('#sortie_lieu');
-            if (!lieuSelect) {
-                console.error("Champ lieu introuvable !");
-                return;
-            }
+            if (!lieuSelect) return;
+
             const fields = {
                 rue: document.querySelector('#lieu-rue'),
                 ville: document.querySelector('#lieu-ville'),
@@ -218,6 +220,15 @@
                 latitude: document.querySelector('#lieu-latitude'),
                 longitude: document.querySelector('#lieu-longitude')
             };
+
+            // 1. Si infosLieu est passé (après erreur), on l'utilise
+            {% if infosLieu %}
+            fields.rue.textContent = {{ infosLieu.rue|json_encode|raw }};
+            fields.ville.textContent = {{ infosLieu.ville|json_encode|raw }};
+            fields.cp.textContent = {{ infosLieu.cp|json_encode|raw }};
+            fields.latitude.textContent = {{ infosLieu.latitude|json_encode|raw }};
+            fields.longitude.textContent = {{ infosLieu.longitude|json_encode|raw }};
+            {% endif %}
 
             async function updateLieuInfo() {
                 const lieuId = lieuSelect.value;
@@ -236,20 +247,21 @@
                     fields.cp.textContent = data.codePostal || 'Non précisé';
                     fields.latitude.textContent = data.latitude || 'Non précisé';
                     fields.longitude.textContent = data.longitude || 'Non précisé';
-                } catch (error) {
-                    console.error(error);
+                } catch (err) {
+                    console.error(err);
                     Object.values(fields).forEach(el => el.textContent = 'Erreur');
                 }
             }
 
-            if (lieuSelect.value) {
-                updateLieuInfo();
-            }
+            // 2. Fetch seulement si pas d'infosLieu
+            {% if not infosLieu and form.lieu.vars.value %}
+            updateLieuInfo();
+            {% endif %}
 
+            // 3. Toujours écouter le changement
             lieuSelect.addEventListener('change', updateLieuInfo);
-        }
-
-        document.addEventListener('turbo:load', initLieuSelect);
-        document.addEventListener('DOMContentLoaded', initLieuSelect);
+        });
     </script>
 {% endblock %}
+
+

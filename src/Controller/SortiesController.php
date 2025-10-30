@@ -119,6 +119,24 @@ final class SortiesController extends AbstractController
         $form = $this->createForm(SortiesFormType::class, $sortie);
         $form->handleRequest($request);
 
+        $infosLieu = null;
+
+        // === 1. Précharger les infos du lieu si soumis (même invalide) ===
+        if ($form->isSubmitted()) {
+            $lieu = $form->get('lieu')->getData();
+            if ($lieu instanceof Lieu) {
+                $ville = $lieu->getVille();
+                $infosLieu = [
+                    'rue' => $lieu->getRue(),
+                    'ville' => $ville?->getNom() ?? 'Non précisé',
+                    'cp' => $ville?->getCodePostal() ?? 'Non précisé',
+                    'latitude' => $lieu->getLatitude(),
+                    'longitude' => $lieu->getLongitude(),
+                ];
+            }
+        }
+
+        // === 2. Si formulaire soumis ET valide → sauvegarde + redirection ===
         if ($form->isSubmitted() && $form->isValid()) {
             if ($imageFile = $form->get('urlPhoto')->getData()) {
                 $sortie->setUrlPhoto($fileUploader->upload($imageFile));
@@ -131,14 +149,17 @@ final class SortiesController extends AbstractController
             $em->persist($sortie);
             $em->flush();
 
-            $this->addFlash('success', 'Sortie créée avec succès ✅');
+            $this->addFlash('success', 'Sortie créée avec succès');
             return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
         }
 
+        // === 3. Sinon : afficher le formulaire (GET ou POST invalide) ===
         return $this->render('sorties/ajouter.html.twig', [
-            'form' => $form, // Pas de createView() ici
+            'form' => $form->createView(),
+            'infosLieu' => $infosLieu,
         ]);
     }
+
 
     // ------------------------- MODIFIER -------------------------
     #[Route('/{id}/modifier', name: 'modifier', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]

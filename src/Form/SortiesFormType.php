@@ -35,6 +35,7 @@ class SortiesFormType extends AbstractType
             ->add('lieu', EntityType::class, [
                 'class' => Lieu::class,
                 'choice_label' => 'nom_lieu',
+                'choice_value' => 'id', // AJOUTE CECI
                 'placeholder' => 'Choisir un lieu',
                 'label' => 'Lieu',
             ])
