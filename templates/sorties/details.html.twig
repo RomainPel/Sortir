@@ -23,7 +23,6 @@
                         {{ sortie.participants|length }}/{{ sortie.nbinscriptionmax }} inscrits
                     </span>
                 </div>
-
                 <!-- Card principale avec les détails -->
                 <div class="card shadow-sm border-0 mb-4">
                     {% if sortie.urlPhoto %}
@@ -134,8 +133,7 @@
                                         </button>
                                     </h2>
                                     <div id="participantsList"
-                                         class="accordion-collapse collapse"
-                                         data-bs-parent="#participantsAccordion">
+                                         class="accordion-collapse collapse">
                                         <div class="accordion-body p-0">
                                             <ul class="list-group list-group-flush">
                                                 {% for participant in sortie.participants %}
@@ -153,6 +151,8 @@
                                     </div>
                                 </div>
                             </div>
+
+
                         {% endif %}
                     </div>
                 </div>
@@ -190,15 +190,15 @@
 
 
                     {% if sortie.organisateur == app.user %}
-                    {% if sortie.etat and sortie.etat.noEtat == 1 %}
-                        <a href="{{ path('sorties_modifier', {'id': sortie.id}) }}" class="btn btn-outline-info">
-                            Modifier la sortie
-                        </a>
+                        {% if sortie.etat and sortie.etat.noEtat == 1 %}
+                            <a href="{{ path('sorties_modifier', {'id': sortie.id}) }}" class="btn btn-outline-info">
+                                Modifier la sortie
+                            </a>
 
-                        <a href="{{ path('sorties_supprimer', {'id': sortie.id}) }}" class="btn btn-outline-danger">
-                            Supprimer la sortie
-                        </a>
-                    {% endif %}
+                            <a href="{{ path('sorties_supprimer', {'id': sortie.id}) }}" class="btn btn-outline-danger">
+                                Supprimer la sortie
+                            </a>
+                        {% endif %}
 
                         <!-- Vérifie si la sortie est avant l'état "publiée" -->
                         {% if sortie.etat and sortie.etat.noEtat < 2 %}
