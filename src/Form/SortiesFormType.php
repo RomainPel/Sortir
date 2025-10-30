@@ -23,12 +23,12 @@ class SortiesFormType extends AbstractType
     {
         $builder
             ->add('nom', TextType::class, ['label' => 'Nom de la sortie'])
-            ->add('datedebut', DateTimeType::class, [
+            ->add('dateDebut', DateTimeType::class, [
                 'widget' => 'single_text',
                 'label' => 'Date et heure de début',
             ])
             ->add('duree', IntegerType::class, ['label' => 'Durée (minutes)'])
-            ->add('datecloture', DateTimeType::class, [
+            ->add('dateCloture', DateTimeType::class, [
                 'widget' => 'single_text',
                 'label' => 'Date de clôture',
             ])
@@ -38,8 +38,8 @@ class SortiesFormType extends AbstractType
                 'placeholder' => 'Choisir un lieu',
                 'label' => 'Lieu',
             ])
-            ->add('nbinscriptionmax', IntegerType::class, ['label' => 'Nombre maximum d’inscriptions'])
-            ->add('descriptioninfos', TextareaType::class, [
+            ->add('nbInscriptionMax', IntegerType::class, ['label' => 'Nombre maximum d’inscriptions'])
+            ->add('descriptionInfos', TextareaType::class, [
                 'required' => false,
                 'label' => 'Description',
             ])

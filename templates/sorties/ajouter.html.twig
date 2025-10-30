@@ -25,20 +25,7 @@
 
         {# Récupération des erreurs globales + erreurs des dates #}
         {% set global_errors = form.vars.errors %}
-        {% set date_errors = form.datedebut.vars.errors|merge(form.datecloture.vars.errors) %}
 
-        {% if global_errors|length > 0 or date_errors|length > 0 %}
-            <div class="alert alert-danger">
-                <ul class="mb-0">
-                    {% for error in global_errors %}
-                        <li>{{ error.message }}</li>
-                    {% endfor %}
-                    {% for error in date_errors %}
-                        <li>{{ error.message }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-        {% endif %}
 
         <div class="row">
             <div class="col-md-6">
@@ -60,34 +47,48 @@
 
                 {# Date de début — erreurs affichées en haut #}
                 <div class="mb-3">
-                    {{ form_label(form.datedebut, null, {'label_attr': {'class': 'form-label'}}) }}
-                    {{ form_widget(form.datedebut, {
+                    {{ form_label(form.dateDebut, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.dateDebut, {
                         'attr': {
-                            'class': 'form-control' ~ (form.datedebut.vars.errors|length > 0 ? ' is-invalid' : '')
+                            'class': 'form-control' ~ (form.dateDebut.vars.errors|length > 0 ? ' is-invalid' : '')
                         }
                     }) }}
+                    {% if form.dateDebut.vars.errors|length > 0 %}
+                        <div class="invalid-feedback">
+                            {% for error in form.dateDebut.vars.errors %}
+                                {{ error.message }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
 
                 {# Date de clôture — erreurs affichées en haut #}
                 <div class="mb-3">
-                    {{ form_label(form.datecloture, null, {'label_attr': {'class': 'form-label'}}) }}
-                    {{ form_widget(form.datecloture, {
+                    {{ form_label(form.dateCloture, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.dateCloture, {
                         'attr': {
-                            'class': 'form-control' ~ (form.datecloture.vars.errors|length > 0 ? ' is-invalid' : '')
+                            'class': 'form-control' ~ (form.dateCloture.vars.errors|length > 0 ? ' is-invalid' : '')
                         }
                     }) }}
+                    {% if form.dateCloture.vars.errors|length > 0 %}
+                        <div class="invalid-feedback">
+                            {% for error in form.dateCloture.vars.errors %}
+                                {{ error.message }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
 
                 <div class="mb-3">
-                    {{ form_label(form.nbinscriptionmax, null, {'label_attr': {'class': 'form-label'}}) }}
-                    {{ form_widget(form.nbinscriptionmax, {
+                    {{ form_label(form.nbInscriptionMax, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.nbInscriptionMax, {
                         'attr': {
-                            'class': 'form-control' ~ (form.nbinscriptionmax.vars.errors|length > 0 ? ' is-invalid' : '')
+                            'class': 'form-control' ~ (form.nbInscriptionMax.vars.errors|length > 0 ? ' is-invalid' : '')
                         }
                     }) }}
-                    {% if form.nbinscriptionmax.vars.errors|length > 0 %}
+                    {% if form.nbInscriptionMax.vars.errors|length > 0 %}
                         <div class="invalid-feedback">
-                            {% for error in form.nbinscriptionmax.vars.errors %}
+                            {% for error in form.nbInscriptionMax.vars.errors %}
                                 {{ error.message }}
                             {% endfor %}
                         </div>
@@ -111,16 +112,16 @@
                 </div>
 
                 <div class="mb-3">
-                    {{ form_label(form.descriptioninfos, null, {'label_attr': {'class': 'form-label'}}) }}
-                    {{ form_widget(form.descriptioninfos, {
+                    {{ form_label(form.descriptionInfos, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.descriptionInfos, {
                         'attr': {
-                            'class': 'form-control' ~ (form.descriptioninfos.vars.errors|length > 0 ? ' is-invalid' : ''),
+                            'class': 'form-control' ~ (form.descriptionInfos.vars.errors|length > 0 ? ' is-invalid' : ''),
                             'rows': 3
                         }
                     }) }}
-                    {% if form.descriptioninfos.vars.errors|length > 0 %}
+                    {% if form.descriptionInfos.vars.errors|length > 0 %}
                         <div class="invalid-feedback">
-                            {% for error in form.descriptioninfos.vars.errors %}
+                            {% for error in form.descriptionInfos.vars.errors %}
                                 {{ error.message }}
                             {% endfor %}
                         </div>

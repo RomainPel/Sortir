@@ -52,7 +52,7 @@ class Sortie
     #[Assert\NotBlank(message: 'Veuillez renseigner le nombre maximum d\'inscriptions')]
     #[Assert\Positive(message: 'Le nombre d\'inscriptions doit être positif')]
     #[ORM\Column]
-    private ?int $nbInscriptionMax = null;
+    private ?int $nbInscriptionMax = 0;
 
     #[Assert\Length(
         max: 500,
@@ -157,7 +157,7 @@ class Sortie
         return $this;
     }
 
-    public function getDescriptioninfos(): ?string
+    public function getDescriptionInfos(): ?string
     {
         return $this->descriptionInfos;
     }

@@ -39,7 +39,6 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 50)]
     private ?string $mail = null;
 
-    #[Assert\Regex(pattern : '^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$', message: 'Le mot de passe doit contenir au moins 8 caractères avec une Majuscule, un chiffre et un caractère spécial')]
     #[ORM\Column(length: 255)]
     private ?string $motDePasse = null;
 

@@ -27,16 +27,7 @@
                         <p class="text-muted">Mettez à jour les informations de cette sortie</p>
                     </div>
 
-                    {# Erreurs générales du formulaire #}
-                    {% if form.vars.errors|length > 0 %}
-                        <div class="alert alert-danger">
-                            <ul class="mb-0">
-                                {% for error in form.vars.errors %}
-                                    <li>{{ error.message }}</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    {% endif %}
+                    {# ⚠️ SUPPRESSION des erreurs globales ici #}
 
                     <div class="card shadow-sm border-0 bg-white">
                         <div class="card-body p-4">
@@ -51,13 +42,9 @@
                                                 'placeholder': 'Ex: Randonnée au parc'
                                             }
                                         }) }}
-                                        {% if form.nom.vars.errors|length > 0 %}
-                                            <div class="invalid-feedback">
-                                                {% for error in form.nom.vars.errors %}
-                                                    {{ error.message }}
-                                                {% endfor %}
-                                            </div>
-                                        {% endif %}
+                                        {% for error in form.nom.vars.errors %}
+                                            <div class="invalid-feedback">{{ error.message }}</div>
+                                        {% endfor %}
                                     </div>
                                 </div>
 
@@ -69,68 +56,52 @@
                                                 'class': 'form-select' ~ (form.lieu.vars.errors|length > 0 ? ' is-invalid' : '')
                                             }
                                         }) }}
-                                        {% if form.lieu.vars.errors|length > 0 %}
-                                            <div class="invalid-feedback">
-                                                {% for error in form.lieu.vars.errors %}
-                                                    {{ error.message }}
-                                                {% endfor %}
-                                            </div>
-                                        {% endif %}
+                                        {% for error in form.lieu.vars.errors %}
+                                            <div class="invalid-feedback">{{ error.message }}</div>
+                                        {% endfor %}
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        {{ form_label(form.datedebut, 'Date et heure de la sortie', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
-                                        {{ form_widget(form.datedebut, {
+                                        {{ form_label(form.dateDebut, 'Date et heure de la sortie', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                                        {{ form_widget(form.dateDebut, {
                                             'attr': {
-                                                'class': 'form-control' ~ (form.datedebut.vars.errors|length > 0 ? ' is-invalid' : '')
+                                                'class': 'form-control' ~ (form.dateDebut.vars.errors|length > 0 ? ' is-invalid' : '')
                                             }
                                         }) }}
-                                        {% if form.datedebut.vars.errors|length > 0 %}
-                                            <div class="invalid-feedback">
-                                                {% for error in form.datedebut.vars.errors %}
-                                                    {{ error.message }}
-                                                {% endfor %}
-                                            </div>
-                                        {% endif %}
+                                        {% for error in form.dateDebut.vars.errors %}
+                                            <div class="invalid-feedback">{{ error.message }}</div>
+                                        {% endfor %}
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        {{ form_label(form.nbinscriptionmax, 'Nombre maximum de personne', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
-                                        {{ form_widget(form.nbinscriptionmax, {
+                                        {{ form_label(form.nbInscriptionMax, 'Nombre maximum de personnes', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                                        {{ form_widget(form.nbInscriptionMax, {
                                             'attr': {
-                                                'class': 'form-control' ~ (form.nbinscriptionmax.vars.errors|length > 0 ? ' is-invalid' : ''),
+                                                'class': 'form-control' ~ (form.nbInscriptionMax.vars.errors|length > 0 ? ' is-invalid' : ''),
                                                 'placeholder': 'Ex: 15'
                                             }
                                         }) }}
-                                        {% if form.nbinscriptionmax.vars.errors|length > 0 %}
-                                            <div class="invalid-feedback">
-                                                {% for error in form.nbinscriptionmax.vars.errors %}
-                                                    {{ error.message }}
-                                                {% endfor %}
-                                            </div>
-                                        {% endif %}
+                                        {% for error in form.nbInscriptionMax.vars.errors %}
+                                            <div class="invalid-feedback">{{ error.message }}</div>
+                                        {% endfor %}
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        {{ form_label(form.datecloture, 'Date de clôture', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
-                                        {{ form_widget(form.datecloture, {
+                                        {{ form_label(form.dateCloture, 'Date de clôture', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                                        {{ form_widget(form.dateCloture, {
                                             'attr': {
-                                                'class': 'form-control' ~ (form.datecloture.vars.errors|length > 0 ? ' is-invalid' : '')
+                                                'class': 'form-control' ~ (form.dateCloture.vars.errors|length > 0 ? ' is-invalid' : '')
                                             }
                                         }) }}
-                                        {% if form.datecloture.vars.errors|length > 0 %}
-                                            <div class="invalid-feedback">
-                                                {% for error in form.datecloture.vars.errors %}
-                                                    {{ error.message }}
-                                                {% endfor %}
-                                            </div>
-                                        {% endif %}
+                                        {% for error in form.dateCloture.vars.errors %}
+                                            <div class="invalid-feedback">{{ error.message }}</div>
+                                        {% endfor %}
                                     </div>
                                 </div>
 
@@ -143,33 +114,25 @@
                                                 'placeholder': 'Ex: 120'
                                             }
                                         }) }}
-                                        {% if form.duree.vars.errors|length > 0 %}
-                                            <div class="invalid-feedback">
-                                                {% for error in form.duree.vars.errors %}
-                                                    {{ error.message }}
-                                                {% endfor %}
-                                            </div>
-                                        {% endif %}
+                                        {% for error in form.duree.vars.errors %}
+                                            <div class="invalid-feedback">{{ error.message }}</div>
+                                        {% endfor %}
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        {{ form_label(form.descriptioninfos, 'Description', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
-                                        {{ form_widget(form.descriptioninfos, {
+                                        {{ form_label(form.descriptionInfos, 'Description', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                                        {{ form_widget(form.descriptionInfos, {
                                             'attr': {
-                                                'class': 'form-control' ~ (form.descriptioninfos.vars.errors|length > 0 ? ' is-invalid' : ''),
+                                                'class': 'form-control' ~ (form.descriptionInfos.vars.errors|length > 0 ? ' is-invalid' : ''),
                                                 'rows': 4,
                                                 'placeholder': 'Décrivez la sortie'
                                             }
                                         }) }}
-                                        {% if form.descriptioninfos.vars.errors|length > 0 %}
-                                            <div class="invalid-feedback">
-                                                {% for error in form.descriptioninfos.vars.errors %}
-                                                    {{ error.message }}
-                                                {% endfor %}
-                                            </div>
-                                        {% endif %}
+                                        {% for error in form.descriptionInfos.vars.errors %}
+                                            <div class="invalid-feedback">{{ error.message }}</div>
+                                        {% endfor %}
                                     </div>
                                 </div>
 
@@ -181,13 +144,9 @@
                                                 'class': 'form-control' ~ (form.urlPhoto.vars.errors|length > 0 ? ' is-invalid' : '')
                                             }
                                         }) }}
-                                        {% if form.urlPhoto.vars.errors|length > 0 %}
-                                            <div class="invalid-feedback">
-                                                {% for error in form.urlPhoto.vars.errors %}
-                                                    {{ error.message }}
-                                                {% endfor %}
-                                            </div>
-                                        {% endif %}
+                                        {% for error in form.urlPhoto.vars.errors %}
+                                            <div class="invalid-feedback">{{ error.message }}</div>
+                                        {% endfor %}
                                         <small class="form-text text-muted">Formats acceptés: JPG, PNG, GIF, BMP (max 1 Mo)</small>
                                     </div>
                                 </div>
