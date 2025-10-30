@@ -209,9 +209,12 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        function initLieuSelect() {
             const lieuSelect = document.querySelector('#sortie_lieu');
-            if (!lieuSelect) return;
+            if (!lieuSelect) {
+                console.error("Champ lieu introuvable !");
+                return;
+            }
 
             const fields = {
                 rue: document.querySelector('#lieu-rue'),
@@ -220,15 +223,6 @@
                 latitude: document.querySelector('#lieu-latitude'),
                 longitude: document.querySelector('#lieu-longitude')
             };
-
-            // 1. Si infosLieu est passé (après erreur), on l'utilise
-            {% if infosLieu %}
-            fields.rue.textContent = {{ infosLieu.rue|json_encode|raw }};
-            fields.ville.textContent = {{ infosLieu.ville|json_encode|raw }};
-            fields.cp.textContent = {{ infosLieu.cp|json_encode|raw }};
-            fields.latitude.textContent = {{ infosLieu.latitude|json_encode|raw }};
-            fields.longitude.textContent = {{ infosLieu.longitude|json_encode|raw }};
-            {% endif %}
 
             async function updateLieuInfo() {
                 const lieuId = lieuSelect.value;
@@ -247,20 +241,26 @@
                     fields.cp.textContent = data.codePostal || 'Non précisé';
                     fields.latitude.textContent = data.latitude || 'Non précisé';
                     fields.longitude.textContent = data.longitude || 'Non précisé';
-                } catch (err) {
-                    console.error(err);
+                } catch (error) {
+                    console.error(error);
                     Object.values(fields).forEach(el => el.textContent = 'Erreur');
                 }
             }
 
-            // 2. Fetch seulement si pas d'infosLieu
-            {% if not infosLieu and form.lieu.vars.value %}
-            updateLieuInfo();
-            {% endif %}
+            // Utiliser setTimeout pour attendre que le select soit complètement initialisé
+            setTimeout(() => {
+                if (lieuSelect.value) {
+                    updateLieuInfo();
+                }
+            }, 100);
 
-            // 3. Toujours écouter le changement
+            // Écouter les changements
             lieuSelect.addEventListener('change', updateLieuInfo);
-        });
+        }
+
+        // Support pour les deux types de chargement
+        document.addEventListener('DOMContentLoaded', initLieuSelect);
+        document.addEventListener('turbo:load', initLieuSelect);
     </script>
 {% endblock %}
 
