@@ -25,12 +25,12 @@ class SortiesFormType extends AbstractType
             ->add('nom', TextType::class, ['label' => 'Nom de la sortie'])
             ->add('dateDebut', DateTimeType::class, [
                 'widget' => 'single_text',
-                'label' => 'Date et heure de début',
+                'label' => 'Date de la sortie',
             ])
             ->add('duree', IntegerType::class, ['label' => 'Durée (minutes)'])
             ->add('dateCloture', DateTimeType::class, [
                 'widget' => 'single_text',
-                'label' => 'Date de clôture',
+                'label' => 'Date de clôture des inscriptions',
             ])
             ->add('lieu', EntityType::class, [
                 'class' => Lieu::class,
