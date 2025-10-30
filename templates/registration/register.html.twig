@@ -5,20 +5,58 @@
 {% block stylesheets %}
     {{ parent() }}
     <style>
+        .registration-container {
+            min-height: 50vh;
+            display: flex;
+            align-items: center;
+            padding: 2rem 0;
+        }
+
+        /* --- Bloc transparent avec ombre --- */
+        .card.shadow-sm {
+            background: rgba(255, 255, 255, 0.1); /* 10% opaque blanc */
+            backdrop-filter: blur(10px);           /* effet flou derrière */
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); /* ombre visible */
+            color: #000000;
+        }
+
+        label, .form-check-label, .text-muted, small {
+            color: #000000 !important;
+        }
+
+        input.form-control {
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Champs invalides */
         .invalid-feedback {
             display: block;
             color: #dc3545;
             font-size: 0.875em;
             margin-top: 0.25rem;
         }
+
         .is-invalid {
             border-color: #dc3545;
         }
-        .registration-container {
-            min-height: 50vh;
-            display: flex;
-            align-items: center;
-            padding: 2rem 0;
+
+        /* Animation d’apparition douce */
+        .card {
+            opacity: 0;
+            transform: translateY(15px);
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 {% endblock %}
@@ -28,9 +66,11 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-10 col-xl-8">
-                    <h1 class="text-center mb-2">S'inscrire</h1>
+                    <div class="text-center mb-4">
+                        <h1 class="mb-2">S'inscrire</h1>
+                        <p>Créez votre compte pour rejoindre la communauté</p>
+                    </div>
 
-                    {# Erreurs générales du formulaire #}
                     {% if registrationForm.vars.errors|length > 0 %}
                         <div class="alert alert-danger">
                             <ul class="mb-0">
@@ -46,7 +86,7 @@
                             {{ form_start(registrationForm) }}
 
                             <div class="row">
-                                {# Colonne gauche #}
+                                <!-- Colonne gauche -->
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         {{ form_label(registrationForm.pseudo, 'Pseudo', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
@@ -118,7 +158,7 @@
                                     </div>
                                 </div>
 
-                                {# Colonne droite #}
+                                <!-- Colonne droite -->
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         {{ form_label(registrationForm.mail, 'Email', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
