@@ -163,11 +163,29 @@ final class SortiesController extends AbstractController
 
     // ------------------------- MODIFIER -------------------------
     #[Route('/{id}/modifier', name: 'modifier', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    public function modifier(int $id, Request $request, EntityManagerInterface $em, FileUploaderSortie $fileUploader): Response
-    {
+    public function modifier(
+        int $id,
+        Request $request,
+        EntityManagerInterface $em,
+        FileUploaderSortie $fileUploader
+    ): Response {
         $sortie = $em->getRepository(Sortie::class)->find($id);
         if (!$sortie) {
             throw $this->createNotFoundException('Sortie non trouvée.');
+        }
+
+        $user = $this->getUser();
+
+        // ✅ Autoriser soit l'organisateur, soit un admin
+        if ($sortie->getOrganisateur() !== $user && !$user->isAdministrateur()) {
+            $this->addFlash('error', 'Vous n\'êtes pas autorisé à modifier cette sortie.');
+            return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
+        }
+
+        // ✅ Bloquer la modification si la sortie est trop avancée (sauf pour un admin)
+        if ($sortie->getEtat() && $sortie->getEtat()->getNoEtat() >= 4 && !$user->isAdministrateur()) {
+            $this->addFlash('error', 'Cette sortie ne peut plus être modifiée.');
+            return $this->redirectToRoute('sorties_details', ['id' => $sortie->getId()]);
         }
 
         $form = $this->createForm(SortiesFormType::class, $sortie);
@@ -177,6 +195,7 @@ final class SortiesController extends AbstractController
             if ($imageFile = $form->get('urlPhoto')->getData()) {
                 $sortie->setUrlPhoto($fileUploader->upload($imageFile));
             }
+
             $em->flush();
 
             $this->addFlash('success', 'Sortie modifiée avec succès ✅');
@@ -184,10 +203,11 @@ final class SortiesController extends AbstractController
         }
 
         return $this->render('sorties/modifier.html.twig', [
-            'form' => $form,  // ← Enlevez createView()
+            'form' => $form,
             'sortie' => $sortie,
         ]);
     }
+
 
     // ------------------------- SUPPRIMER -------------------------
     #[Route('/{id}/supprimer', name: 'supprimer', requirements: ['id' => '\d+'], methods: ['GET'])]
